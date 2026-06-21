@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+
+html, body { background: #090b10; }
+
+body {
+  color: #e6e9ef;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle radial glow behind the app, like the meridian look */
+.app-bg {
+  background:
+    radial-gradient(900px 500px at 12% -8%, rgba(20,184,166,0.10), transparent 60%),
+    radial-gradient(800px 480px at 100% 0%, rgba(124,156,255,0.08), transparent 55%),
+    #090b10;
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(26,31,43,0.9), rgba(20,24,35,0.9));
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+}
+
+.hairline { border-color: rgba(255,255,255,0.07); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #252b3a; border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
