@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MARKAS — Marketing Command Center · PT Kalingga Tataraya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --ink:#0E1726; --ink-2:#1B2738; --ink-3:#2A3a52;
+  --bg:#EEF1F6; --surface:#FFFFFF; --surface-2:#F6F8FB;
+  --line:#E2E8F2; --line-2:#D6DEEC;
+  --txt:#16202E; --txt-2:#5B6B82; --txt-3:#8A99B0;
+  --primary:#0E9E6E; --primary-d:#0A7E58; --primary-soft:#E3F6EE;
+  --seo:#5B61F0; --seo-soft:#ECEDFE;
+  --social:#E84393; --social-soft:#FCE8F2;
+  --market:#E8830C; --market-soft:#FDF0DD;
+  --danger:#E5484D; --danger-soft:#FCEBEC;
+  --warn:#D98A00; --ok:#0E9E6E;
+  --r:14px; --r-sm:9px; --r-lg:20px;
+  --sh:0 1px 2px rgba(14,23,38,.05),0 4px 16px rgba(14,23,38,.05);
+  --sh-lg:0 10px 40px rgba(14,23,38,.13);
+  --fast:.15s ease; --med:.28s cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-.02em;color:var(--txt)}
+.tnum{font-variant-numeric:tabular-nums}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:inherit;font-size:14px}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#C5D0E0;border-radius:10px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ============ LOGIN ============ */
+#login{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 120% at 80% 0%,#15324a 0%,var(--ink) 55%);padding:20px}
+.login-card{width:100%;max-width:430px;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--sh-lg);overflow:hidden;animation:pop .4s var(--med)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.login-head{padding:30px 32px 22px;background:linear-gradient(110deg,var(--ink) 0%,var(--ink-2) 100%);color:#fff}
+.login-head .logo{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.login-head .mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),#16C088);display:grid;place-items:center;font-family:'Sora';font-weight:800;color:#062c20;font-size:19px}
+.login-head h1{color:#fff;font-size:22px;font-weight:800}
+.login-head .sub{color:#9DB2C9;font-size:12.5px;margin-top:3px;letter-spacing:.04em}
+.login-head p{color:#B9C8DA;font-size:13px;margin-top:14px}
+.login-body{padding:22px 26px 28px}
+.login-body .lbl{font-size:11.5px;font-weight:600;color:var(--txt-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:11px}
+.user-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.user-pick{display:flex;align-items:center;gap:11px;padding:12px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface-2);transition:var(--fast);text-align:left}
+.user-pick:hover{border-color:var(--primary);background:#fff;transform:translateY(-1px)}
+.user-pick.sel{border-color:var(--primary);background:var(--primary-soft);box-shadow:0 0 0 3px var(--primary-soft)}
+.user-pick .av{flex-shrink:0}
+.user-pick .nm{font-weight:600;font-size:13px;line-height:1.2}
+.user-pick .rl{font-size:11px;color:var(--txt-3);margin-top:1px}
+.pin-row{display:flex;gap:10px}
+.pin-row input{flex:1;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--r);letter-spacing:4px;font-weight:600;text-align:center}
+.pin-row input:focus{outline:none;border-color:var(--primary)}
+.btn-login{padding:12px 20px;background:var(--ink);color:#fff;border-radius:var(--r);font-weight:600;font-size:14px;transition:var(--fast)}
+.btn-login:hover{background:var(--ink-2)}
+.login-hint{font-size:11.5px;color:var(--txt-3);text-align:center;margin-top:14px}
+
+/* ============ AVATAR ============ */
+.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;font-family:'Sora'}
+.av.sm{width:24px;height:24px;font-size:10px}
+.av.lg{width:42px;height:42px;font-size:15px}
+
+/* ============ SHELL ============ */
+#app{display:none}
+.shell{display:flex;min-height:100vh}
+.sidebar{width:236px;background:var(--ink);color:#C7D4E5;flex-shrink:0;display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;z-index:40;transition:transform var(--med)}
+.sb-brand{padding:18px 18px 16px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-brand .mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--primary),#16C088);display:grid;place-items:center;font-family:'Sora';font-weight:800;color:#062c20;font-size:17px}
+.sb-brand .t1{font-family:'Sora';font-weight:800;color:#fff;font-size:16px;line-height:1}
+.sb-brand .t2{font-size:10px;color:#7C8FA8;letter-spacing:.1em;margin-top:3px}
+.sb-nav{flex:1;overflow-y:auto;padding:12px 12px 8px}
+.sb-sec{font-size:10px;font-weight:700;color:#5E7290;text-transform:uppercase;letter-spacing:.09em;padding:14px 12px 7px}
+.sb-link{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;color:#AFC0D6;font-weight:500;font-size:13.5px;transition:var(--fast);width:100%;text-align:left;position:relative}
+.sb-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-link.active{background:var(--ink-3);color:#fff}
+.sb-link.active::before{content:"";position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:18px;border-radius:3px;background:var(--lc,var(--primary))}
+.sb-link .ic{width:18px;height:18px;flex-shrink:0;stroke-width:1.9}
+.sb-link .badge{margin-left:auto;background:var(--lc,var(--primary));color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;min-width:18px;text-align:center}
+.sb-foot{padding:12px;border-top:1px solid rgba(255,255,255,.07)}
+.sb-user{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px}
+.sb-user .nm{font-size:13px;font-weight:600;color:#fff;line-height:1.1}
+.sb-user .rl{font-size:11px;color:#8298B2}
+.sb-user .out{margin-left:auto;color:#8298B2;padding:6px;border-radius:8px}
+.sb-user .out:hover{background:rgba(255,255,255,.08);color:#fff}
+
+.main{flex:1;margin-left:236px;min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(238,241,246,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:13px 26px;display:flex;align-items:center;gap:16px}
+.topbar .ham{display:none}
+.topbar .crumb{font-family:'Sora';font-weight:700;font-size:17px}
+.topbar .crumb small{display:block;font-family:'Inter';font-weight:400;font-size:11.5px;color:var(--txt-3);margin-top:1px}
+.topbar .spacer{flex:1}
+.topbar .tdate{font-size:12.5px;color:var(--txt-2);font-weight:500}
+.sync-dot{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--txt-2);padding:5px 10px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.sync-dot i{width:7px;height:7px;border-radius:50%;background:#C5D0E0}
+.sync-dot.on i{background:var(--primary)}
+.content{padding:24px 26px 60px;max-width:1320px;width:100%}
+
+/* ============ COMMON UI ============ */
+.row{display:flex;gap:14px}
+.pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+.pagehead .h{font-size:21px;font-weight:800}
+.pagehead .d{color:var(--txt-2);font-size:13px;margin-top:3px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border-radius:10px;font-weight:600;font-size:13px;transition:var(--fast);white-space:nowrap}
+.btn .ic{width:16px;height:16px;stroke-width:2.1}
+.btn.pri{background:var(--ink);color:#fff}
+.btn.pri:hover{background:var(--ink-2)}
+.btn.gho{background:var(--surface);color:var(--txt);border:1px solid var(--line-2)}
+.btn.gho:hover{border-color:var(--ink-3);background:#fff}
+.btn.sm{padding:6px 11px;font-size:12px}
+.btn.acc{background:var(--accent,var(--primary));color:#fff}
+.btn.acc:hover{filter:brightness(.94)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.card-h{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card-h h3{font-size:14.5px;font-weight:700}
+.card-h .sub{font-size:12px;color:var(--txt-3);font-weight:400}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;line-height:1.4}
+.pill .d{width:6px;height:6px;border-radius:50%}
+.pill.todo{background:#EEF1F6;color:#64748B}
+.pill.progress{background:#FFF4E0;color:#B47700}
+.pill.review{background:var(--seo-soft);color:#4A4FCB}
+.pill.done{background:var(--primary-soft);color:var(--primary-d)}
+.pill.high{background:var(--danger-soft);color:#C13A3E}
+.pill.med{background:#FFF4E0;color:#B47700}
+.pill.low{background:#EEF1F6;color:#64748B}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:7px;font-size:11px;font-weight:600;background:var(--surface-2);color:var(--txt-2);border:1px solid var(--line)}
+.chl{padding:2px 8px;border-radius:7px;font-size:11px;font-weight:700;color:#fff}
+
+.empty{text-align:center;padding:46px 20px;color:var(--txt-3)}
+.empty svg{width:40px;height:40px;margin-bottom:12px;opacity:.5}
+.empty .t{font-weight:600;color:var(--txt-2);font-size:14px}
+.empty .s{font-size:12.5px;margin-top:4px}
+
+/* KPI bento */
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 17px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.kpi .ic-w{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;margin-bottom:12px}
+.kpi .ic-w svg{width:18px;height:18px;stroke-width:2}
+.kpi .v{font-size:27px;font-weight:800;font-family:'Sora';line-height:1}
+.kpi .l{font-size:12.5px;color:var(--txt-2);margin-top:5px;font-weight:500}
+.kpi .sub{font-size:11.5px;margin-top:8px;font-weight:600}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:9px 14px;font-size:11px;font-weight:700;color:var(--txt-3);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--surface-2)}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+
+/* kanban */
+.kanban{display:grid;gap:13px;align-items:start}
+.kcol{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);min-height:120px;transition:var(--fast)}
+.kcol.drag-over{border-color:var(--primary);background:var(--primary-soft)}
+.kcol-h{padding:11px 14px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:12.5px;position:sticky;top:60px}
+.kcol-h .cnt{margin-left:auto;background:#fff;border:1px solid var(--line);border-radius:20px;font-size:11px;padding:0 8px;color:var(--txt-2);min-width:22px;text-align:center}
+.kcol-h .d{width:8px;height:8px;border-radius:50%}
+.kbody{padding:0 10px 10px;display:flex;flex-direction:column;gap:9px;min-height:30px}
+.kcard{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px;box-shadow:0 1px 2px rgba(14,23,38,.04);cursor:grab;transition:var(--fast)}
+.kcard:hover{box-shadow:var(--sh);border-color:var(--line-2)}
+.kcard.dragging{opacity:.5}
+.kcard .kt{font-weight:600;font-size:13px;line-height:1.35;margin-bottom:7px}
+.kcard .kmeta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:9px}
+.kcard .kd{font-size:11px;color:var(--txt-3);display:flex;align-items:center;gap:4px}
+.kcard .kd.over{color:var(--danger);font-weight:600}
+.kbar{display:flex;gap:5px;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line)}
+.kbar button{font-size:11px;color:var(--txt-2);padding:3px 8px;border-radius:7px;background:var(--surface-2);font-weight:600}
+.kbar button:hover{background:var(--ink);color:#fff}
+
+/* pipeline */
+.pipe{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.pcol{min-width:228px;flex:1;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r)}
+.pcol-h{padding:11px 13px;font-weight:700;font-size:12px;display:flex;align-items:center;gap:7px;border-bottom:2px solid var(--stage,var(--social))}
+.pcol-h .cnt{margin-left:auto;font-size:11px;color:var(--txt-2);background:#fff;border:1px solid var(--line);border-radius:20px;padding:0 7px}
+.pbody{padding:10px;display:flex;flex-direction:column;gap:9px;min-height:40px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:11px;padding:11px;box-shadow:0 1px 2px rgba(14,23,38,.04)}
+.pcard .pt{font-weight:600;font-size:13px;line-height:1.3;margin-bottom:7px}
+.pcard .chl-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
+.pcard .pmeta{font-size:11px;color:var(--txt-3);display:flex;align-items:center;gap:5px;margin-top:3px}
+.pcard .pnav{display:flex;gap:5px;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line)}
+.pcard .pnav button{flex:1;font-size:11px;font-weight:600;padding:5px;border-radius:7px;background:var(--surface-2);color:var(--txt-2)}
+.pcard .pnav button:hover{background:var(--social);color:#fff}
+.pcard .pnav button.appr{background:var(--primary);color:#fff}
+.pcard .pnav button.appr:hover{background:var(--primary-d)}
+
+/* calendar */
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.cal-h{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.cal-h .mo{font-family:'Sora';font-weight:700;font-size:16px}
+.cal-h button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;color:var(--txt-2)}
+.cal-h button:hover{background:var(--surface-2)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-dow{text-align:center;font-size:11px;font-weight:700;color:var(--txt-3);padding:9px 0;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)}
+.cal-cell{min-height:96px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px;position:relative}
+.cal-cell:nth-child(7n){border-right:none}
+.cal-cell.muted{background:var(--surface-2)}
+.cal-cell .dn{font-size:12px;font-weight:600;color:var(--txt-2)}
+.cal-cell.today .dn{background:var(--ink);color:#fff;width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
+.cal-ev{font-size:10.5px;font-weight:600;padding:2px 6px;border-radius:6px;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.cal-ev .d{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+
+/* segmented */
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{padding:6px 13px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--txt-2)}
+.seg button.on{background:#fff;color:var(--txt);box-shadow:var(--sh)}
+
+/* progress */
+.bar{height:7px;border-radius:20px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:20px;background:var(--accent,var(--primary));transition:width .5s var(--med)}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;z-index:90;background:rgba(14,23,38,.5);backdrop-filter:blur(3px);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;animation:fade .2s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{width:100%;max-width:520px;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--sh-lg);animation:pop .3s var(--med)}
+.modal-h{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.modal-h h3{font-size:16px;font-weight:700}
+.modal-h .x{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--txt-3)}
+.modal-h .x:hover{background:var(--surface-2);color:var(--txt)}
+.modal-b{padding:20px 22px}
+.modal-f{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+.fg{margin-bottom:15px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--txt-2);margin-bottom:6px}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface-2);transition:var(--fast)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--primary);background:#fff}
+.fg textarea{resize:vertical;min-height:64px}
+.fg .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chk-grid{display:flex;flex-wrap:wrap;gap:7px}
+.chk{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border:1.5px solid var(--line);border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer;background:var(--surface-2);transition:var(--fast)}
+.chk.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-d)}
+
+/* toast */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);z-index:120;background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;font-weight:500;box-shadow:var(--sh-lg);opacity:0;pointer-events:none;transition:var(--med);display:flex;align-items:center;gap:9px}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast .ic{width:18px;height:18px;color:var(--primary)}
+
+/* responsive */
+.scrim{display:none;position:fixed;inset:0;background:rgba(14,23,38,.4);z-index:39}
+@media(max-width:980px){
+  .bento{grid-template-columns:1fr 1fr}
+  .grid2{grid-template-columns:1fr!important}
+}
+@media(max-width:760px){
+  .sidebar{transform:translateX(-100%);box-shadow:var(--sh-lg)}
+  .sidebar.open{transform:none}
+  .scrim.open{display:block}
+  .main{margin-left:0}
+  .topbar{padding:11px 16px}
+  .topbar .ham{display:grid;place-items:center;width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--txt)}
+  .topbar .tdate{display:none}
+  .content{padding:18px 14px 60px}
+  .bento{grid-template-columns:1fr 1fr;gap:10px}
+  .kpi .v{font-size:23px}
+  .user-grid{grid-template-columns:1fr}
+  .cal-cell{min-height:64px}
+  .cal-ev{font-size:9px}
+  .pagehead .h{font-size:18px}
+}
+.grid2{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}
+.hide{display:none!important}
+.mb16{margin-bottom:16px}
+.mut{color:var(--txt-3)}
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-head">
+      <div class="logo">
+        <div class="mark">M</div>
+        <div><h1>MARKAS</h1><div class="sub">MARKETING COMMAND CENTER</div></div>
+      </div>
+      <p>Satu tempat untuk SEO, sosial media, dan marketplace PT Kalingga Tataraya.</p>
+    </div>
+    <div class="login-body">
+      <div class="lbl">Masuk sebagai</div>
+      <div class="user-grid" id="loginUsers"></div>
+      <div class="lbl">PIN</div>
+      <div class="pin-row">
+        <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+        <button class="btn-login" onclick="doLogin()">Masuk</button>
+      </div>
+      <div class="login-hint">PIN demo untuk semua akun: <b>1234</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP ===================== -->
+<div id="app">
+<div class="scrim" id="scrim" onclick="toggleSidebar(false)"></div>
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="mark">M</div>
+      <div><div class="t1">MARKAS</div><div class="t2">KALINGGA · DIGITAL MKT</div></div>
+    </div>
+    <nav class="sb-nav" id="nav"></nav>
+    <div class="sb-foot">
+      <div class="sb-user">
+        <span id="sbAv"></span>
+        <div style="min-width:0"><div class="nm" id="sbName"></div><div class="rl" id="sbRole"></div></div>
+        <button class="out" title="Keluar" onclick="logout()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <button class="ham" onclick="toggleSidebar(true)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="crumb" id="crumb">Dashboard<small id="crumbSub"></small></div>
+      <div class="spacer"></div>
+      <div class="tdate" id="tdate"></div>
+      <div class="sync-dot" id="syncDot" title="Status sinkronisasi"><i></i><span>Lokal</span></div>
+    </header>
+    <main class="content" id="view"></main>
+  </div>
+</div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   MARKAS — Marketing Command Center · PT Kalingga Tataraya
+   Single-file app. Storage: localStorage (guarded) + optional
+   Supabase cloud sync for cross-device team use.
+   ============================================================ */
+
+/* ---------- ICONS ---------- */
+const I = {
+  dash:'<path d="M3 13h8V3H3zM13 21h8V3h-8zM3 21h8v-6H3z"/>',
+  task:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  social:'<path d="M23 7l-7 5 7 5z"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
+  market:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>',
+  seo:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+  asset:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  report:'<path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/>',
+  team:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  set:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+  plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  check:'<polyline points="20 6 9 17 4 12"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  box:'<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>',
+  truck:'<rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+  eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  alert:'<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+  inbox:'<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>'
+};
+const svg=(p,c='')=>`<svg class="ic ${c}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+
+/* ---------- ROLES / CONFIG ---------- */
+const ROLES={
+  lead:{name:'Digital Marketing Lead',short:'Lead'},
+  seo:{name:'SEO Staff',short:'SEO'},
+  social:{name:'Sosial Media Staff',short:'Sosmed'},
+  marketplace:{name:'Marketplace Staff',short:'Marketplace'}
+};
+const NAV=[
+  {sec:'Utama'},
+  {id:'dashboard',label:'Dashboard',ic:I.dash,roles:['lead','seo','social','marketplace'],color:'var(--primary)'},
+  {id:'tasks',label:'Tugas',ic:I.task,roles:['lead','seo','social','marketplace'],color:'var(--primary)'},
+  {id:'calendar',label:'Kalender Konten',ic:I.cal,roles:['lead','seo','social','marketplace'],color:'var(--primary)'},
+  {sec:'Modul'},
+  {id:'seo',label:'SEO',ic:I.seo,roles:['lead','seo'],color:'var(--seo)'},
+  {id:'social',label:'Sosial Media',ic:I.social,roles:['lead','social'],color:'var(--social)'},
+  {id:'market',label:'Marketplace',ic:I.market,roles:['lead','marketplace'],color:'var(--market)'},
+  {sec:'Sumber Daya'},
+  {id:'assets',label:'Aset & Brand',ic:I.asset,roles:['lead','seo','social','marketplace'],color:'var(--primary)'},
+  {id:'reports',label:'Laporan',ic:I.report,roles:['lead'],color:'var(--primary)'},
+  {id:'team',label:'Tim',ic:I.team,roles:['lead'],color:'var(--primary)'},
+  {id:'settings',label:'Pengaturan',ic:I.set,roles:['lead'],color:'var(--primary)'}
+];
+const PLATFORMS={instagram:['Instagram','#E1306C'],facebook:['Facebook','#1877F2'],linkedin:['LinkedIn','#0A66C2']};
+const STAGES=[['ide','Ide'],['brief','Brief'],['shoot','Shooting'],['edit','Editing'],['review','Review'],['scheduled','Terjadwal'],['posted','Tayang']];
+const TASK_COLS=[['todo','Antrian','#94A3B8'],['progress','Dikerjakan','#E8830C'],['review','Review','#5B61F0'],['done','Selesai','#0E9E6E']];
+
+/* ---------- STATE ---------- */
+let S=null, cur=null, view='dashboard', calMonth=null, store='local';
+const K='markas_kalingga_v3';
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function dISO(off){const d=new Date();d.setDate(d.getDate()+off);return d.toISOString().slice(0,10)}
+function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function fmtD(iso){if(!iso)return '—';const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('id-ID',{day:'numeric',month:'short'})}
+function fmtFull(iso){const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+
+/* ---------- SEED ---------- */
+function seed(){
+  const u={
+    lead:{id:'u1',name:'Lead Marketing',role:'lead',color:'#0E9E6E'},
+    seo:{id:'u2',name:'Staf SEO',role:'seo',color:'#5B61F0'},
+    social:{id:'u3',name:'Staf Sosmed',role:'social',color:'#E84393'},
+    market:{id:'u4',name:'Staf Marketplace',role:'marketplace',color:'#E8830C'}
+  };
+  return {
+    users:[u.lead,u.seo,u.social,u.market],
+    pin:'1234',
+    settings:{company:'PT Kalingga Tataraya',seoMonitorUrl:'https://seo-monitor-phi.vercel.app',supabaseUrl:'',supabaseKey:'',workspaceId:'kalingga',sync:false,slaTargetMin:15,slaPlatformMin:60,storeOpen:'08:00',storeClose:'16:00'},
+    tasks:[
+      {id:uid(),title:'Brief konten promo Kärcher HD bulan ini',role:'lead',assignee:'u3',status:'progress',priority:'high',due:dISO(2),createdBy:'u1',note:'Highlight after-sales & service center'},
+      {id:uid(),title:'Riset keyword "alat cuci steam industri"',role:'seo',assignee:'u2',status:'todo',priority:'med',due:dISO(4),createdBy:'u1',note:''},
+      {id:uid(),title:'Update foto produk Ansell di Shopee',role:'marketplace',assignee:'u4',status:'todo',priority:'med',due:dISO(1),createdBy:'u1',note:'Sarung tangan seri TouchNTuff'},
+      {id:uid(),title:'Artikel blog: tips perawatan vacuum cleaner',role:'seo',assignee:'u2',status:'review',priority:'med',due:dISO(0),createdBy:'u2',note:'Tinggal review meta description'},
+      {id:uid(),title:'Edit reels demo LIVI tissue dispenser',role:'social',assignee:'u3',status:'progress',priority:'med',due:dISO(3),createdBy:'u3',note:''},
+      {id:uid(),title:'Balas ulasan negatif Tokopedia',role:'marketplace',assignee:'u4',status:'done',priority:'high',due:dISO(-1),createdBy:'u1',note:''}
+    ],
+    content:[
+      {id:uid(),title:'Demo Kärcher HD 5/11 — uji tekanan',platforms:['instagram','facebook'],type:'Reels',shootDate:dISO(1),postDate:dISO(5),stage:'shoot',owner:'u3',asset:'',caption:'Tekanan tinggi, hasil bersih maksimal 💪',hashtags:'#karcher #cleaningequipment #kalingga',metrics:{views:0,likes:0,reach:0,saves:0},note:''},
+      {id:uid(),title:'Carousel: 5 alasan pilih SWIPE-ALL',platforms:['instagram'],type:'Carousel',shootDate:dISO(-2),postDate:dISO(2),stage:'review',owner:'u3',asset:'https://drive.google.com/…',caption:'Wipes industri tahan robek & multiguna.',hashtags:'#swipeall #industrialwipes',metrics:{views:0,likes:0,reach:0,saves:0},note:'Tunggu approval Lead'},
+      {id:uid(),title:'Behind the scene tim gudang',platforms:['instagram','facebook'],type:'Foto',shootDate:dISO(-5),postDate:dISO(-1),stage:'posted',owner:'u3',asset:'https://drive.google.com/…',caption:'Tim yang siap melayani kebutuhan Anda.',hashtags:'#kalinggatataraya',metrics:{views:1820,likes:96,reach:1540,saves:12},note:''},
+      {id:uid(),title:'Ide: testimoni klien hotel',platforms:['instagram','linkedin'],type:'Reels',shootDate:'',postDate:dISO(10),stage:'ide',owner:'u3',asset:'',caption:'',hashtags:'',metrics:{views:0,likes:0,reach:0,saves:0},note:'Koordinasi dengan sales dulu'}
+    ],
+    mp_daily:[
+      {id:uid(),date:todayISO(),channel:'shopee',orders:14,resi:11,shipped:9,chatsIn:38,chatsReplied:35,respMin:9,owner:'u4',note:''},
+      {id:uid(),date:todayISO(),channel:'tokopedia',orders:9,resi:9,shipped:7,chatsIn:21,chatsReplied:21,respMin:6,owner:'u4',note:''},
+      {id:uid(),date:dISO(-1),channel:'shopee',orders:17,resi:17,shipped:17,chatsIn:44,chatsReplied:40,respMin:12,owner:'u4',note:'Ada 1 komplain resi salah'},
+      {id:uid(),date:dISO(-1),channel:'tokopedia',orders:12,resi:12,shipped:12,chatsIn:25,chatsReplied:24,respMin:7,owner:'u4',note:''}
+    ],
+    mp_products:[
+      {id:uid(),sku:'ANS-93260',name:'Ansell TouchNTuff 93-260',channel:'shopee',task:'foto',status:'todo',note:'Foto baru + ukuran lengkap'},
+      {id:uid(),sku:'KRC-HD511C',name:'Kärcher HD 5/11 C',channel:'tokopedia',task:'harga',status:'todo',note:'Sesuaikan harga 2026'},
+      {id:uid(),sku:'LIVI-2090',name:'LIVI Tissue Dispenser',channel:'shopee',task:'stok',status:'done',note:''},
+      {id:uid(),sku:'SWP-ALL-XL',name:'SWIPE-ALL XL Wipes',channel:'tokopedia',task:'deskripsi',status:'todo',note:'Tambah spesifikasi material'}
+    ],
+    mp_issues:[
+      {id:uid(),date:dISO(-1),type:'komplain',channel:'shopee',ref:'SP-882910',desc:'Resi tertukar dengan pesanan lain',status:'proses'},
+      {id:uid(),date:dISO(-3),type:'retur',channel:'tokopedia',ref:'TKP-441020',desc:'Produk diterima penyok',status:'selesai'}
+    ],
+    seo:[
+      {id:uid(),title:'Optimasi halaman kategori "Alat Kebersihan Industri"',type:'onpage',target:'/kategori/alat-kebersihan',status:'progress',due:dISO(3),owner:'u2',note:'Perbaiki H1 & internal link'},
+      {id:uid(),title:'Artikel pilar: panduan memilih vacuum industri',type:'artikel',target:'vacuum industri',status:'review',due:dISO(0),owner:'u2',note:''},
+      {id:uid(),title:'Perbaikan broken link & redirect',type:'teknikal',target:'sitewide',status:'todo',due:dISO(6),owner:'u2',note:''},
+      {id:uid(),title:'Outreach backlink ke direktori B2B',type:'backlink',target:'5 direktori',status:'todo',due:dISO(12),owner:'u2',note:''}
+    ],
+    assets:[
+      {id:uid(),name:'Logo Kalingga (master)',category:'Brand',url:'https://drive.google.com/…',note:'PNG + SVG transparan'},
+      {id:uid(),name:'Template caption IG',category:'Template',url:'https://drive.google.com/…',note:''},
+      {id:uid(),name:'Footage mentah produk',category:'Footage',url:'https://drive.google.com/…',note:'Per brand'},
+      {id:uid(),name:'Foto produk Shopee/Tokopedia',category:'Produk',url:'https://drive.google.com/…',note:'1:1 background putih'}
+    ]
+  };
+}
+
+/* ---------- PERSISTENCE ---------- */
+function save(){
+  try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}
+  if(S.settings.sync) pushCloud();
+}
+function load(){
+  try{const r=localStorage.getItem(K); if(r){S=JSON.parse(r); return true}}catch(e){}
+  return false;
+}
+async function pullCloud(){
+  const {supabaseUrl,supabaseKey,workspaceId}=S.settings;
+  if(!supabaseUrl||!supabaseKey)return;
+  try{
+    const r=await fetch(`${supabaseUrl}/rest/v1/markas_state?id=eq.${encodeURIComponent(workspaceId)}&select=data`,{headers:{apikey:supabaseKey,Authorization:'Bearer '+supabaseKey}});
+    if(r.ok){const rows=await r.json(); if(rows&&rows[0]&&rows[0].data&&rows[0].data.users){const cloud=rows[0].data; cloud.settings={...cloud.settings,supabaseUrl,supabaseKey,workspaceId,sync:true}; S=cloud; try{localStorage.setItem(K,JSON.stringify(S))}catch(e){} setSync(true);}}
+  }catch(e){setSync(false)}
+}
+let pushT;
+async function pushCloud(){
+  clearTimeout(pushT);
+  pushT=setTimeout(async()=>{
+    const {supabaseUrl,supabaseKey,workspaceId}=S.settings;
+    if(!supabaseUrl||!supabaseKey)return;
+    try{
+      const r=await fetch(`${supabaseUrl}/rest/v1/markas_state?on_conflict=id`,{method:'POST',headers:{apikey:supabaseKey,Authorization:'Bearer '+supabaseKey,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({id:workspaceId,data:S,updated_at:new Date().toISOString()})});
+      setSync(r.ok);
+    }catch(e){setSync(false)}
+  },900);
+}
+function setSync(ok){
+  const el=document.getElementById('syncDot');
+  if(S.settings.sync){el.classList.add('on');el.querySelector('span').textContent=ok?'Tersinkron':'Sync gagal';}
+  else{el.classList.remove('on');el.querySelector('span').textContent='Lokal';}
+}
+
+/* ---------- HELPERS ---------- */
+const userById=id=>S.users.find(u=>u.id===id)||{name:'—',color:'#94A3B8'};
+function avatar(id,cls=''){const u=userById(id);const ini=u.name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();return `<span class="av ${cls}" style="background:${u.color}">${ini}</span>`}
+function toast(msg){const t=document.getElementById('toast');t.innerHTML=svg(I.check)+`<span>${esc(msg)}</span>`;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+function isOverdue(iso,status){return iso&&iso<todayISO()&&status!=='done'&&status!=='posted'}
+
+/* ---------- AUTH ---------- */
+function renderLogin(){
+  const g=document.getElementById('loginUsers');
+  g.innerHTML=S.users.map(u=>`
+    <button class="user-pick" data-id="${u.id}" onclick="pickUser('${u.id}',this)">
+      ${avatar(u.id)}
+      <div style="min-width:0"><div class="nm">${esc(ROLES[u.role].short)}</div><div class="rl">${esc(ROLES[u.role].name)}</div></div>
+    </button>`).join('');
+}
+let pickedUser=null;
+function pickUser(id,el){pickedUser=id;document.querySelectorAll('.user-pick').forEach(x=>x.classList.remove('sel'));el.classList.add('sel')}
+function doLogin(){
+  if(!pickedUser){toast('Pilih akun dulu');return}
+  const pin=document.getElementById('pinInput').value;
+  if(pin!==(S.pin||'1234')){toast('PIN salah');return}
+  cur=userById(pickedUser);
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='block';
+  boot();
+}
+function logout(){cur=null;location.reload()}
+
+/* ---------- SHELL ---------- */
+function boot(){
+  document.getElementById('sbAv').innerHTML=avatar(cur.id);
+  document.getElementById('sbName').textContent=ROLES[cur.role].short;
+  document.getElementById('sbRole').textContent=ROLES[cur.role].name;
+  document.getElementById('tdate').textContent=fmtFull(todayISO());
+  buildNav();
+  setSync(S.settings.sync);
+  go(cur.role==='lead'?'dashboard':(cur.role==='marketplace'?'dashboard':'dashboard'));
+}
+function buildNav(){
+  const n=document.getElementById('nav');
+  let h='';
+  NAV.forEach(item=>{
+    if(item.sec){h+=`<div class="sb-sec">${item.sec}</div>`;return}
+    if(!item.roles.includes(cur.role))return;
+    let badge='';
+    if(item.id==='tasks'){const c=myOpenTasks().length; if(c)badge=`<span class="badge" style="--lc:${item.color}">${c}</span>`}
+    if(item.id==='social'&&cur.role==='lead'){const c=S.content.filter(x=>x.stage==='review').length; if(c)badge=`<span class="badge" style="--lc:${item.color}">${c}</span>`}
+    h+=`<button class="sb-link ${view===item.id?'active':''}" style="--lc:${item.color}" onclick="go('${item.id}')">${svg(item.ic)}<span>${item.label}</span>${badge}</button>`;
+  });
+  n.innerHTML=h;
+}
+function go(v){view=v;buildNav();toggleSidebar(false);render();window.scrollTo(0,0)}
+function toggleSidebar(open){const sb=document.getElementById('sidebar'),sc=document.getElementById('scrim');if(window.innerWidth>760)return;sb.classList.toggle('open',open);sc.classList.toggle('open',open)}
+function myOpenTasks(){return S.tasks.filter(t=>t.assignee===cur.id&&t.status!=='done')}
+
+/* ---------- ROUTER ---------- */
+function render(){
+  const meta={dashboard:['Dashboard','Ringkasan aktivitas tim'],tasks:['Tugas','Papan kerja semua divisi'],calendar:['Kalender Konten','Jadwal tayang & deadline'],
+    seo:['SEO','Tugas optimasi & konten organik'],social:['Sosial Media','Pipeline produksi konten'],market:['Marketplace','Operasional Tokopedia & Shopee'],
+    assets:['Aset & Brand','Pustaka file & template'],reports:['Laporan','Kinerja tim'],team:['Tim','Anggota & peran'],settings:['Pengaturan','Sinkronisasi & profil']};
+  const m=meta[view]||['',''];
+  document.getElementById('crumb').childNodes[0].nodeValue=m[0];
+  document.getElementById('crumbSub').textContent=m[1];
+  const V=document.getElementById('view');
+  ({dashboard:vDashboard,tasks:vTasks,calendar:vCalendar,seo:vSeo,social:vSocial,market:vMarket,assets:vAssets,reports:vReports,team:vTeam,settings:vSettings}[view]||vDashboard)(V);
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function vDashboard(V){
+  const isLead=cur.role==='lead';
+  const greet=new Date().getHours()<11?'Selamat pagi':new Date().getHours()<15?'Selamat siang':new Date().getHours()<18?'Selamat sore':'Selamat malam';
+  let h=`<div class="pagehead"><div><div class="h">${greet}, ${esc(ROLES[cur.role].short)} 👋</div><div class="d">${fmtFull(todayISO())}</div></div></div>`;
+
+  // KPI strip — role aware
+  h+=`<div class="bento">`;
+  const myTasks=myOpenTasks();
+  const overdue=S.tasks.filter(t=>isOverdue(t.due,t.status)&&(isLead||t.assignee===cur.id));
+  h+=kpi('--primary','--primary-soft',I.task,myTasks.length,isLead?'Tugas tim aktif':'Tugas saya',S.tasks.filter(t=>t.status==='done').length+' selesai total');
+  if(isLead||cur.role==='social'){const inPipe=S.content.filter(c=>c.stage!=='posted').length;const review=S.content.filter(c=>c.stage==='review').length;
+    h+=kpi('--social','--social-soft',I.social,inPipe,'Konten dalam pipeline',review?`<span style="color:var(--social)">${review} menunggu approval</span>`:'Semua lancar');}
+  if(isLead||cur.role==='marketplace'){const t=mpTotals();
+    h+=kpi('--market','--market-soft',I.box,t.orders,'Pesanan hari ini',`${t.shipped} dikirim · ${t.replyRate}% chat dibalas`);}
+  if(isLead||cur.role==='seo'){const open=S.seo.filter(s=>s.status!=='done').length;
+    h+=kpi('--seo','--seo-soft',I.seo,open,'Tugas SEO aktif',`<span style="color:var(--danger)">${overdue.length} lewat tenggat</span>`);}
+  if(isLead){h+=`</div><div class="bento">`;
+    // second row lead
+  }
+  h+=`</div>`;
+
+  // === LEAD: approval queue + team workload ===
+  if(isLead){
+    h+=`<div class="grid2 mb16">`;
+    // approval queue
+    const pend=S.content.filter(c=>c.stage==='review');
+    h+=`<div class="card"><div class="card-h"><h3>Menunggu persetujuan Anda</h3><span class="sub">${pend.length} konten</span></div><div style="padding:8px">`;
+    if(!pend.length)h+=emptyBox(I.check,'Tidak ada antrean','Semua konten sudah ditinjau.');
+    else pend.forEach(c=>{h+=`<div style="display:flex;align-items:center;gap:11px;padding:11px 10px;border-bottom:1px solid var(--line)">
+      <div style="width:6px;height:36px;border-radius:6px;background:var(--social)"></div>
+      <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px">${esc(c.title)}</div>
+      <div style="font-size:11.5px;color:var(--txt-3);margin-top:2px">${platformPills(c.platforms)} · tayang ${fmtD(c.postDate)}</div></div>
+      <button class="btn acc sm" style="--accent:var(--primary)" onclick="approveContent('${c.id}')">Setujui</button>
+      <button class="btn gho sm" onclick="openContent('${c.id}')">Lihat</button></div>`});
+    h+=`</div></div>`;
+    // team workload
+    h+=`<div class="card"><div class="card-h"><h3>Beban kerja tim</h3></div><div style="padding:14px 16px">`;
+    S.users.filter(u=>u.role!=='lead').forEach(u=>{
+      const open=S.tasks.filter(t=>t.assignee===u.id&&t.status!=='done').length;
+      const ov=S.tasks.filter(t=>t.assignee===u.id&&isOverdue(t.due,t.status)).length;
+      const pct=Math.min(100,open*20);
+      h+=`<div style="margin-bottom:14px"><div style="display:flex;align-items:center;gap:9px;margin-bottom:6px">
+        ${avatar(u.id,'sm')}<span style="font-weight:600;font-size:12.5px">${esc(ROLES[u.role].short)}</span>
+        <span style="margin-left:auto;font-size:12px;color:var(--txt-2)">${open} tugas${ov?` · <span style="color:var(--danger);font-weight:600">${ov} lewat</span>`:''}</span></div>
+        <div class="bar"><i style="width:${pct}%;--accent:${u.color}"></i></div></div>`;
+    });
+    h+=`</div></div></div>`;
+  }
+
+  // === Tugas saya / hari ini ===
+  const due=S.tasks.filter(t=>t.status!=='done'&&(isLead||t.assignee===cur.id)).sort((a,b)=>(a.due||'9')<(b.due||'9')?-1:1).slice(0,6);
+  h+=`<div class="card mb16"><div class="card-h"><h3>${isLead?'Tugas tim terdekat':'Tugas saya'}</h3><button class="btn gho sm" onclick="go('tasks')">Buka papan</button></div>`;
+  if(!due.length)h+=emptyBox(I.check,'Mantap, tidak ada tugas tertunda','Semua sudah beres.');
+  else{h+=`<div style="padding:6px 4px">`;
+    due.forEach(t=>{const ov=isOverdue(t.due,t.status);
+      h+=`<div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-bottom:1px solid var(--line)">
+        <span class="pill ${t.priority}">${({high:'Tinggi',med:'Sedang',low:'Rendah'})[t.priority]}</span>
+        <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px">${esc(t.title)}</div>
+        <div style="font-size:11.5px;color:${ov?'var(--danger)':'var(--txt-3)'};margin-top:2px">${roleTag(t.role)} · ${ov?'⚠ lewat tenggat ':''}${fmtD(t.due)}</div></div>
+        ${avatar(t.assignee,'sm')}</div>`});
+    h+=`</div>`;}
+  h+=`</div>`;
+
+  // quick links
+  h+=`<div class="card"><div class="card-h"><h3>Akses cepat</h3></div><div style="padding:16px;display:flex;gap:10px;flex-wrap:wrap">`;
+  h+=quick(I.seo,'SEO Monitor','Pantau ranking',`window.open('${S.settings.seoMonitorUrl}','_blank')`,'--seo');
+  if(isLead||cur.role==='social')h+=quick(I.social,'Buat konten','Tambah ke pipeline',`go('social');setTimeout(()=>openContent('new'),100)`,'--social');
+  if(isLead||cur.role==='marketplace')h+=quick(I.box,'Input harian','Lapor marketplace',`go('market');setTimeout(()=>openMpDaily('new'),100)`,'--market');
+  h+=quick(I.cal,'Kalender','Lihat jadwal',`go('calendar')`,'--primary');
+  h+=`</div></div>`;
+  V.innerHTML=h;
+}
+function kpi(c,soft,ic,v,l,sub){return `<div class="kpi"><div class="ic-w" style="background:var(${soft});color:var(${c})">${svg(ic)}</div><div class="v tnum">${v}</div><div class="l">${l}</div><div class="sub mut">${sub}</div></div>`}
+function quick(ic,t,s,act,c){return `<button class="btn gho" style="flex-direction:column;align-items:flex-start;padding:14px;min-width:150px;gap:8px" onclick="${act}"><span style="width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(${c.replace(')','-soft)').replace('--','--')||''};color:var(${c})">${svg(ic)}</span><span style="text-align:left"><span style="font-weight:700;font-size:13px;display:block">${t}</span><span style="font-size:11.5px;color:var(--txt-3);font-weight:400">${s}</span></span></button>`}
+function emptyBox(ic,t,s){return `<div class="empty">${svg(ic).replace('class="ic ','class="')}<div class="t">${t}</div><div class="s">${s}</div></div>`}
+function roleTag(r){const c={lead:'--primary',seo:'--seo',social:'--social',marketplace:'--market'}[r];return `<span style="color:var(${c});font-weight:600">${ROLES[r].short}</span>`}
+function platformPills(arr){return (arr||[]).map(p=>`<span class="chl" style="background:${PLATFORMS[p]?PLATFORMS[p][1]:'#888'}">${PLATFORMS[p]?PLATFORMS[p][0]:p}</span>`).join(' ')}
+
+/* ============================================================
+   TASKS (Kanban)
+   ============================================================ */
+let taskFilter='all';
+function vTasks(V){
+  const isLead=cur.role==='lead';
+  let h=`<div class="pagehead"><div><div class="h">Papan Tugas</div><div class="d">Geser kartu antar kolom atau pakai tombol untuk pindah status.</div></div>
+    <button class="btn pri" onclick="openTask('new')">${svg(I.plus)} Tugas baru</button></div>`;
+  // filter
+  h+=`<div class="seg mb16">`;
+  h+=`<button class="${taskFilter==='all'?'on':''}" onclick="taskFilter='all';render()">Semua</button>`;
+  h+=`<button class="${taskFilter==='mine'?'on':''}" onclick="taskFilter='mine';render()">Tugas saya</button>`;
+  ['seo','social','marketplace'].forEach(r=>{if(isLead)h+=`<button class="${taskFilter===r?'on':''}" onclick="taskFilter='${r}';render()">${ROLES[r].short}</button>`});
+  h+=`</div>`;
+
+  let list=S.tasks.slice();
+  if(taskFilter==='mine')list=list.filter(t=>t.assignee===cur.id);
+  else if(taskFilter!=='all')list=list.filter(t=>t.role===taskFilter);
+  else if(!isLead)list=list.filter(t=>t.assignee===cur.id||t.role===cur.role);
+
+  h+=`<div class="kanban" style="grid-template-columns:repeat(4,1fr)">`;
+  TASK_COLS.forEach(([st,label,col])=>{
+    const items=list.filter(t=>t.status===st);
+    h+=`<div class="kcol" data-status="${st}" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropTask(event,'${st}')">
+      <div class="kcol-h"><span class="d" style="background:${col}"></span>${label}<span class="cnt">${items.length}</span></div>
+      <div class="kbody">`;
+    items.forEach(t=>{const ov=isOverdue(t.due,t.status);
+      const idx=TASK_COLS.findIndex(c=>c[0]===st);
+      h+=`<div class="kcard" draggable="true" ondragstart="dragStart(event,'${t.id}')" ondragend="dragEnd(event)" onclick="openTask('${t.id}')">
+        <div class="kt">${esc(t.title)}</div>
+        <div class="kmeta">${avatar(t.assignee,'sm')}${roleChip(t.role)}<span class="pill ${t.priority}" style="margin-left:auto">${({high:'!',med:'•',low:'–'})[t.priority]}</span></div>
+        ${t.due?`<div class="kd ${ov?'over':''}" style="margin-top:8px">${svg(I.clock).replace('class="ic ','class="').replace('<svg','<svg width=12 height=12')}${ov?'Lewat ':''}${fmtD(t.due)}</div>`:''}
+        <div class="kbar" onclick="event.stopPropagation()">
+          ${idx>0?`<button onclick="moveTask('${t.id}',-1)">←</button>`:''}
+          ${idx<3?`<button onclick="moveTask('${t.id}',1)" style="margin-left:auto">→</button>`:''}
+        </div></div>`});
+    if(!items.length)h+=`<div style="font-size:12px;color:var(--txt-3);text-align:center;padding:14px 0">—</div>`;
+    h+=`</div></div>`;
+  });
+  h+=`</div>`;
+  V.innerHTML=h;
+}
+function roleChip(r){const c={lead:'--primary',seo:'--seo',social:'--social',marketplace:'--market'}[r];return `<span class="tag" style="color:var(${c});border-color:transparent;background:color-mix(in srgb,var(${c}) 12%,#fff)">${ROLES[r].short}</span>`}
+let dragId=null;
+function dragStart(e,id){dragId=id;e.target.classList.add('dragging');e.dataTransfer.effectAllowed='move'}
+function dragEnd(e){e.target.classList.remove('dragging')}
+function dragOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over')}
+function dragLeave(e){e.currentTarget.classList.remove('drag-over')}
+function dropTask(e,st){e.preventDefault();e.currentTarget.classList.remove('drag-over');const t=S.tasks.find(x=>x.id===dragId);if(t&&t.status!==st){t.status=st;save();render();toast('Status diperbarui')}}
+function moveTask(id,dir){const t=S.tasks.find(x=>x.id===id);const i=TASK_COLS.findIndex(c=>c[0]===t.status);const ni=i+dir;if(ni<0||ni>3)return;t.status=TASK_COLS[ni][0];save();render()}
+
+/* ============================================================
+   SOCIAL MEDIA (Pipeline)
+   ============================================================ */
+function vSocial(V){
+  const isLead=cur.role==='lead';
+  let h=`<div class="pagehead"><div><div class="h">Pipeline Konten Sosial Media</div><div class="d">Alur: Ide → Brief → Shooting → Editing → Review → Terjadwal → Tayang. Review butuh persetujuan Lead.</div></div>
+    <button class="btn acc" style="--accent:var(--social)" onclick="openContent('new')">${svg(I.plus)} Konten baru</button></div>`;
+
+  // mini stats
+  const posted=S.content.filter(c=>c.stage==='posted');
+  const reach=posted.reduce((a,c)=>a+(c.metrics.reach||0),0);
+  h+=`<div class="bento mb16" style="grid-template-columns:repeat(4,1fr)">`;
+  h+=kpi('--social','--social-soft',I.social,S.content.filter(c=>c.stage!=='posted').length,'Dalam pipeline','');
+  h+=kpi('--seo','--seo-soft',I.eye,posted.length,'Sudah tayang','');
+  h+=kpi('--primary','--primary-soft',I.star,reach.toLocaleString('id-ID'),'Total reach','konten tayang');
+  h+=kpi('--market','--market-soft',I.alert,S.content.filter(c=>c.stage==='review').length,'Menunggu approval','');
+  h+=`</div>`;
+
+  h+=`<div class="pipe">`;
+  STAGES.forEach(([st,label])=>{
+    const items=S.content.filter(c=>c.stage===st);
+    h+=`<div class="pcol"><div class="pcol-h" style="--stage:var(--social)">${label}<span class="cnt">${items.length}</span></div><div class="pbody">`;
+    items.forEach(c=>{
+      const i=STAGES.findIndex(s=>s[0]===st);
+      h+=`<div class="pcard" onclick="openContent('${c.id}')">
+        <div class="pt">${esc(c.title)}</div>
+        <div class="chl-row">${platformPills(c.platforms)}<span class="tag">${esc(c.type)}</span></div>
+        <div class="pmeta">${avatar(c.owner,'sm')}<span>${c.postDate?'Tayang '+fmtD(c.postDate):'belum dijadwalkan'}</span></div>
+        <div class="pnav" onclick="event.stopPropagation()">`;
+      if(i>0)h+=`<button onclick="moveContent('${c.id}',-1)">←</button>`;
+      if(st==='review'){
+        if(isLead)h+=`<button class="appr" onclick="approveContent('${c.id}')">Setujui →</button>`;
+        else h+=`<button disabled style="opacity:.5;cursor:default">Tunggu Lead</button>`;
+      }else if(i<STAGES.length-1){h+=`<button onclick="moveContent('${c.id}',1)">→</button>`}
+      h+=`</div></div>`;
+    });
+    if(!items.length)h+=`<div style="font-size:11.5px;color:var(--txt-3);text-align:center;padding:10px 0">kosong</div>`;
+    h+=`</div></div>`;
+  });
+  h+=`</div>`;
+  V.innerHTML=h;
+}
+function moveContent(id,dir){const c=S.content.find(x=>x.id===id);const i=STAGES.findIndex(s=>s[0]===c.stage);const ni=i+dir;if(ni<0||ni>=STAGES.length)return;
+  // gate: can't pass review unless lead
+  if(STAGES[ni][0]==='scheduled'&&c.stage==='review'&&cur.role!=='lead'){toast('Hanya Lead yang bisa menyetujui');return}
+  c.stage=STAGES[ni][0];save();render()}
+function approveContent(id){if(cur.role!=='lead'){toast('Hanya Lead yang bisa menyetujui');return}const c=S.content.find(x=>x.id===id);c.stage='scheduled';save();render();toast('Konten disetujui & dijadwalkan')}
+
+/* ============================================================
+   MARKETPLACE
+   ============================================================ */
+let mpTab='ringkasan';
+// SLA dua-tingkat: target konversi (jam operasional) & batas aman platform
+function slaEval(min){
+  const tgt=S.settings.slaTargetMin||15, plat=S.settings.slaPlatformMin||60;
+  if(min==null||isNaN(min))return{color:'var(--txt-3)',label:'—'};
+  if(min<=tgt)return{color:'var(--ok)',label:`Target ≤${tgt}' tercapai`};
+  if(min<=plat)return{color:'var(--warn)',label:`Aman (<${plat}') — kejar ≤${tgt}'`};
+  return{color:'var(--danger)',label:`Lewat batas ideal ${plat}'`};
+}
+function vMarket(V){
+  let h=`<div class="pagehead"><div><div class="h">Operasional Marketplace</div><div class="d">Tokopedia & Shopee — pesanan, resi, chat, dan update produk.</div></div>
+    <button class="btn acc" style="--accent:var(--market)" onclick="openMpDaily('new')">${svg(I.plus)} Input harian</button></div>`;
+  h+=`<div class="seg mb16">
+    <button class="${mpTab==='ringkasan'?'on':''}" onclick="mpTab='ringkasan';render()">Ringkasan</button>
+    <button class="${mpTab==='harian'?'on':''}" onclick="mpTab='harian';render()">Log Harian</button>
+    <button class="${mpTab==='produk'?'on':''}" onclick="mpTab='produk';render()">Update Produk</button>
+    <button class="${mpTab==='masalah'?'on':''}" onclick="mpTab='masalah';render()">Komplain & Retur</button></div>`;
+
+  if(mpTab==='ringkasan'){
+    const t=mpTotals();
+    h+=`<div class="bento mb16">`;
+    h+=kpi('--market','--market-soft',I.box,t.orders,'Pesanan hari ini',`Resi ${t.resi} · Kirim ${t.shipped}`);
+    h+=kpi('--seo','--seo-soft',I.chat,t.chatsReplied+'/'+t.chatsIn,'Chat dibalas',`${t.replyRate}% terjawab`);
+    const sl=slaEval(t.avgResp);
+    h+=kpi('--primary','--primary-soft',I.clock,t.avgResp+' mnt','Avg respon chat',sl.label);
+    h+=kpi('--danger','--danger-soft',I.alert,S.mp_issues.filter(x=>x.status!=='selesai').length,'Masalah terbuka','komplain/retur');
+    h+=`</div>`;
+    // SLA panduan (riset standar Tokopedia & Shopee)
+    h+=`<div class="card mb16" style="border-left:3px solid var(--market)"><div style="padding:13px 16px;font-size:12.5px;color:var(--txt-2);line-height:1.65">
+      <b style="color:var(--ink)">Standar SLA chat</b> — jam toko ${esc(S.settings.storeOpen)}–${esc(S.settings.storeClose)}.
+      Target utama <b style="color:var(--ok)">≤ ${S.settings.slaTargetMin} menit</b> saat jam buka (menang dari kompetitor; 78% pembeli pilih toko yang balas duluan).
+      Batas aman <b>&lt; ${S.settings.slaPlatformMin} menit</b> (Tokopedia: ideal balas &lt; 1 jam). Shopee: chat dihitung <b>"dibalas" bila direspon ≤ 12 jam</b> (balasan otomatis tidak dihitung); jaga <b>Persentase Chat Dibalas ≥ 70%</b> + rating ≥ 4,5 agar status Star Seller aman. Karena toko tutup ${esc(S.settings.storeClose)}, chat sore (±16:00–20:00) sebaiknya <b>disapu sekitar 20:00</b> agar tak lewat jendela 12 jam; sisanya dibalas saat toko buka lagi.
+    </div></div>`;
+    // per-channel today
+    h+=`<div class="grid2">`;
+    ['tokopedia','shopee'].forEach(ch=>{
+      const rows=S.mp_daily.filter(d=>d.date===todayISO()&&d.channel===ch);
+      const o=rows.reduce((a,r)=>a+r.orders,0),re=rows.reduce((a,r)=>a+r.resi,0),sh=rows.reduce((a,r)=>a+r.shipped,0);
+      const ci=rows.reduce((a,r)=>a+r.chatsIn,0),cr=rows.reduce((a,r)=>a+r.chatsReplied,0);
+      const cc=ch==='tokopedia'?'#03AC0E':'#EE4D2D';
+      h+=`<div class="card"><div class="card-h"><h3 style="display:flex;align-items:center;gap:8px"><span class="chl" style="background:${cc}">${ch==='tokopedia'?'Tokopedia':'Shopee'}</span></h3><span class="sub">hari ini</span></div>
+        <div style="padding:14px 18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+        ${mpStat(o,'Pesanan')}${mpStat(re,'Resi dicetak')}${mpStat(sh,'Dikirim')}
+        ${mpStat(ci,'Chat masuk')}${mpStat(cr,'Chat dibalas')}${mpStat(o-sh,'Belum kirim',o-sh>0)}
+        </div></div>`;
+    });
+    h+=`</div>`;
+  }
+
+  if(mpTab==='harian'){
+    h+=`<div class="card"><table class="tbl"><thead><tr><th>Tanggal</th><th>Channel</th><th class="num">Pesanan</th><th class="num">Resi</th><th class="num">Kirim</th><th class="num">Chat</th><th class="num">Respon</th><th>Catatan</th></tr></thead><tbody>`;
+    const sorted=S.mp_daily.slice().sort((a,b)=>a.date<b.date?1:-1);
+    if(!sorted.length)h+=`<tr><td colspan="8">${emptyBox(I.inbox,'Belum ada log','Klik “Input harian”.')}</td></tr>`;
+    sorted.forEach(d=>{const cc=d.channel==='tokopedia'?'#03AC0E':'#EE4D2D';
+      h+=`<tr onclick="openMpDaily('${d.id}')" style="cursor:pointer"><td>${fmtD(d.date)}</td>
+        <td><span class="chl" style="background:${cc}">${d.channel==='tokopedia'?'Tokopedia':'Shopee'}</span></td>
+        <td class="num">${d.orders}</td><td class="num">${d.resi}</td><td class="num">${d.shipped}</td>
+        <td class="num">${d.chatsReplied}/${d.chatsIn}</td><td class="num">${d.respMin}m</td>
+        <td style="color:var(--txt-3);font-size:12px">${esc(d.note||'—')}</td></tr>`});
+    h+=`</tbody></table></div>`;
+  }
+
+  if(mpTab==='produk'){
+    h+=`<div class="pagehead" style="margin-bottom:14px"><div></div><button class="btn gho sm" onclick="openMpProduct('new')">${svg(I.plus)} Produk</button></div>`;
+    h+=`<div class="card"><table class="tbl"><thead><tr><th>SKU</th><th>Produk</th><th>Channel</th><th>Jenis update</th><th>Status</th><th></th></tr></thead><tbody>`;
+    if(!S.mp_products.length)h+=`<tr><td colspan="6">${emptyBox(I.box,'Belum ada','Tambah produk yang perlu di-update.')}</td></tr>`;
+    S.mp_products.forEach(p=>{const cc=p.channel==='tokopedia'?'#03AC0E':'#EE4D2D';const tasks={harga:'Harga',stok:'Stok',foto:'Foto',deskripsi:'Deskripsi',baru:'Produk baru'};
+      h+=`<tr><td style="font-family:monospace;font-size:12px">${esc(p.sku)}</td><td style="font-weight:600">${esc(p.name)}</td>
+        <td><span class="chl" style="background:${cc}">${p.channel==='tokopedia'?'Tokopedia':'Shopee'}</span></td>
+        <td><span class="tag">${tasks[p.task]||p.task}</span></td>
+        <td><span class="pill ${p.status==='done'?'done':'todo'}">${p.status==='done'?'Selesai':'Perlu update'}</span></td>
+        <td style="text-align:right"><button class="btn gho sm" onclick="toggleMpProduct('${p.id}')">${p.status==='done'?'Buka lagi':'Tandai selesai'}</button></td></tr>`});
+    h+=`</tbody></table></div>`;
+  }
+
+  if(mpTab==='masalah'){
+    h+=`<div class="pagehead" style="margin-bottom:14px"><div></div><button class="btn gho sm" onclick="openMpIssue('new')">${svg(I.plus)} Catat masalah</button></div>`;
+    h+=`<div class="card"><table class="tbl"><thead><tr><th>Tanggal</th><th>Jenis</th><th>Channel</th><th>Ref pesanan</th><th>Keterangan</th><th>Status</th></tr></thead><tbody>`;
+    if(!S.mp_issues.length)h+=`<tr><td colspan="6">${emptyBox(I.check,'Tidak ada masalah','Bagus!')}</td></tr>`;
+    S.mp_issues.slice().sort((a,b)=>a.date<b.date?1:-1).forEach(x=>{const cc=x.channel==='tokopedia'?'#03AC0E':'#EE4D2D';
+      h+=`<tr onclick="openMpIssue('${x.id}')" style="cursor:pointer"><td>${fmtD(x.date)}</td>
+        <td><span class="pill ${x.type==='komplain'?'high':'med'}">${x.type==='komplain'?'Komplain':'Retur'}</span></td>
+        <td><span class="chl" style="background:${cc}">${x.channel==='tokopedia'?'Tokopedia':'Shopee'}</span></td>
+        <td style="font-family:monospace;font-size:12px">${esc(x.ref)}</td><td>${esc(x.desc)}</td>
+        <td><span class="pill ${x.status==='selesai'?'done':'progress'}">${x.status==='selesai'?'Selesai':'Proses'}</span></td></tr>`});
+    h+=`</tbody></table></div>`;
+  }
+  V.innerHTML=h;
+}
+function mpStat(v,l,warn){return `<div><div style="font-size:20px;font-weight:800;font-family:'Sora';color:${warn?'var(--danger)':'var(--txt)'}">${v}</div><div style="font-size:11.5px;color:var(--txt-3);margin-top:2px">${l}</div></div>`}
+function mpTotals(){
+  const today=S.mp_daily.filter(d=>d.date===todayISO());
+  const orders=today.reduce((a,d)=>a+d.orders,0),resi=today.reduce((a,d)=>a+d.resi,0),shipped=today.reduce((a,d)=>a+d.shipped,0);
+  const chatsIn=today.reduce((a,d)=>a+d.chatsIn,0),chatsReplied=today.reduce((a,d)=>a+d.chatsReplied,0);
+  const resp=today.filter(d=>d.respMin); const avgResp=resp.length?Math.round(resp.reduce((a,d)=>a+d.respMin,0)/resp.length):0;
+  return{orders,resi,shipped,chatsIn,chatsReplied,avgResp,replyRate:chatsIn?Math.round(chatsReplied/chatsIn*100):100};
+}
+function toggleMpProduct(id){const p=S.mp_products.find(x=>x.id===id);p.status=p.status==='done'?'todo':'done';save();render()}
+
+/* ============================================================
+   SEO
+   ============================================================ */
+function vSeo(V){
+  let h=`<div class="pagehead"><div><div class="h">Tugas SEO</div><div class="d">Konten organik, on-page, teknikal & backlink. Pantau ranking di SEO Monitor.</div></div>
+    <div class="row"><button class="btn gho" onclick="window.open('${S.settings.seoMonitorUrl}','_blank')">${svg(I.link)} SEO Monitor</button>
+    <button class="btn acc" style="--accent:var(--seo)" onclick="openSeo('new')">${svg(I.plus)} Tugas SEO</button></div></div>`;
+
+  const byType={artikel:'Artikel',onpage:'On-page',teknikal:'Teknikal',backlink:'Backlink',riset:'Riset'};
+  h+=`<div class="bento mb16">`;
+  h+=kpi('--seo','--seo-soft',I.seo,S.seo.filter(s=>s.status!=='done').length,'Tugas aktif','');
+  h+=kpi('--primary','--primary-soft',I.check,S.seo.filter(s=>s.status==='done').length,'Selesai','');
+  h+=kpi('--social','--social-soft',I.report,S.seo.filter(s=>s.type==='artikel').length,'Artikel','');
+  h+=kpi('--danger','--danger-soft',I.alert,S.seo.filter(s=>isOverdue(s.due,s.status)).length,'Lewat tenggat','');
+  h+=`</div>`;
+
+  h+=`<div class="card"><table class="tbl"><thead><tr><th>Tugas</th><th>Jenis</th><th>Target</th><th>Tenggat</th><th>Status</th><th></th></tr></thead><tbody>`;
+  if(!S.seo.length)h+=`<tr><td colspan="6">${emptyBox(I.seo,'Belum ada tugas SEO','Tambahkan tugas optimasi pertama.')}</td></tr>`;
+  S.seo.forEach(s=>{const ov=isOverdue(s.due,s.status);
+    h+=`<tr onclick="openSeo('${s.id}')" style="cursor:pointer"><td style="font-weight:600;max-width:300px">${esc(s.title)}</td>
+      <td><span class="tag" style="color:var(--seo);background:var(--seo-soft);border-color:transparent">${byType[s.type]||s.type}</span></td>
+      <td style="color:var(--txt-2);font-size:12.5px">${esc(s.target||'—')}</td>
+      <td style="color:${ov?'var(--danger)':'var(--txt-2)'};font-weight:${ov?600:400}">${ov?'⚠ ':''}${fmtD(s.due)}</td>
+      <td><span class="pill ${s.status}">${({todo:'Antrian',progress:'Dikerjakan',review:'Review',done:'Selesai'})[s.status]}</span></td>
+      <td style="text-align:right"><button class="btn gho sm" onclick="event.stopPropagation();cycleSeo('${s.id}')">Ubah status</button></td></tr>`});
+  h+=`</tbody></table></div>`;
+  V.innerHTML=h;
+}
+function cycleSeo(id){const s=S.seo.find(x=>x.id===id);const order=['todo','progress','review','done'];s.status=order[(order.indexOf(s.status)+1)%4];save();render()}
+
+/* ============================================================
+   CALENDAR
+   ============================================================ */
+function vCalendar(V){
+  if(!calMonth){const d=new Date();calMonth=[d.getFullYear(),d.getMonth()]}
+  const [y,m]=calMonth;
+  const first=new Date(y,m,1),start=first.getDay(),days=new Date(y,m+1,0).getDate();
+  const moName=first.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+  // gather events
+  const ev={};
+  const add=(iso,label,color)=>{if(!iso)return;(ev[iso]=ev[iso]||[]).push({label,color})};
+  S.content.forEach(c=>add(c.postDate,c.title,'var(--social)'));
+  S.tasks.filter(t=>t.status!=='done').forEach(t=>add(t.due,t.title,{lead:'var(--primary)',seo:'var(--seo)',social:'var(--social)',marketplace:'var(--market)'}[t.role]));
+  S.seo.filter(s=>s.status!=='done').forEach(s=>add(s.due,'SEO: '+s.title,'var(--seo)'));
+
+  let h=`<div class="pagehead"><div><div class="h">Kalender Konten</div><div class="d">Jadwal tayang konten, deadline tugas & SEO dalam satu tampilan.</div></div>
+    <div class="row" style="font-size:12px;align-items:center;gap:14px">${legend('var(--social)','Konten')}${legend('var(--seo)','SEO')}${legend('var(--primary)','Tugas')}${legend('var(--market)','Marketplace')}</div></div>`;
+  h+=`<div class="cal"><div class="cal-h">
+    <button onclick="calNav(-1)">‹</button><div class="mo">${moName}</div><button onclick="calNav(1)">›</button>
+    <button onclick="calToday()" style="width:auto;padding:0 12px;font-size:12px;margin-left:8px">Hari ini</button></div>`;
+  h+=`<div class="cal-grid">`;
+  ['Min','Sen','Sel','Rab','Kam','Jum','Sab'].forEach(d=>h+=`<div class="cal-dow">${d}</div>`);
+  for(let i=0;i<start;i++)h+=`<div class="cal-cell muted"></div>`;
+  for(let d=1;d<=days;d++){
+    const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=iso===todayISO();
+    h+=`<div class="cal-cell ${isToday?'today':''}"><div class="dn">${d}</div>`;
+    (ev[iso]||[]).slice(0,3).forEach(e=>h+=`<div class="cal-ev" style="background:color-mix(in srgb,${e.color} 13%,#fff);color:${e.color}"><span class="d" style="background:${e.color}"></span>${esc(e.label)}</div>`);
+    if((ev[iso]||[]).length>3)h+=`<div style="font-size:10px;color:var(--txt-3);margin-top:3px;padding-left:4px">+${ev[iso].length-3} lagi</div>`;
+    h+=`</div>`;
+  }
+  h+=`</div></div>`;
+  V.innerHTML=h;
+}
+function legend(c,l){return `<span style="display:inline-flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:${c}"></span>${l}</span>`}
+function calNav(d){let[y,m]=calMonth;m+=d;if(m<0){m=11;y--}if(m>11){m=0;y++}calMonth=[y,m];render()}
+function calToday(){const d=new Date();calMonth=[d.getFullYear(),d.getMonth()];render()}
+
+/* ============================================================
+   ASSETS
+   ============================================================ */
+function vAssets(V){
+  let h=`<div class="pagehead"><div><div class="h">Aset & Brand</div><div class="d">Pustaka tautan: logo, template, footage, foto produk.</div></div>
+    <button class="btn pri" onclick="openAsset('new')">${svg(I.plus)} Tambah aset</button></div>`;
+  const cats=[...new Set(S.assets.map(a=>a.category))];
+  if(!S.assets.length){h+=`<div class="card">${emptyBox(I.asset,'Belum ada aset','Simpan tautan Google Drive penting di sini.')}</div>`;V.innerHTML=h;return}
+  cats.forEach(cat=>{
+    h+=`<div class="card mb16"><div class="card-h"><h3>${esc(cat)}</h3></div><div style="padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:11px">`;
+    S.assets.filter(a=>a.category===cat).forEach(a=>{
+      h+=`<div style="border:1px solid var(--line);border-radius:11px;padding:13px;background:var(--surface-2)">
+        <div style="display:flex;align-items:flex-start;gap:9px">
+          <span style="width:32px;height:32px;border-radius:8px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;flex-shrink:0">${svg(I.asset)}</span>
+          <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px;line-height:1.3">${esc(a.name)}</div>
+          ${a.note?`<div style="font-size:11.5px;color:var(--txt-3);margin-top:2px">${esc(a.note)}</div>`:''}</div></div>
+        <div style="display:flex;gap:6px;margin-top:11px"><a class="btn gho sm" style="flex:1;justify-content:center;text-decoration:none" href="${esc(a.url)}" target="_blank">Buka</a>
+        <button class="btn gho sm" onclick="openAsset('${a.id}')">Edit</button></div></div>`;});
+    h+=`</div></div>`;
+  });
+  V.innerHTML=h;
+}
+
+/* ============================================================
+   REPORTS (Lead)
+   ============================================================ */
+let repRange='week';
+function vReports(V){
+  const cut=repRange==='week'?dISO(-7):dISO(-30);
+  let h=`<div class="pagehead"><div><div class="h">Laporan Kinerja</div><div class="d">Ringkasan otomatis dari data yang diinput tim.</div></div>
+    <div class="seg"><button class="${repRange==='week'?'on':''}" onclick="repRange='week';render()">7 hari</button><button class="${repRange==='month'?'on':''}" onclick="repRange='month';render()">30 hari</button></div></div>`;
+
+  // task completion
+  const done=S.tasks.filter(t=>t.status==='done').length,total=S.tasks.length;
+  const pct=total?Math.round(done/total*100):0;
+  h+=`<div class="bento mb16">`;
+  h+=kpi('--primary','--primary-soft',I.check,pct+'%',' Penyelesaian tugas',`${done}/${total} selesai`);
+  h+=kpi('--social','--social-soft',I.social,S.content.filter(c=>c.stage==='posted'&&c.postDate>=cut).length,'Konten tayang','periode ini');
+  const mp=S.mp_daily.filter(d=>d.date>=cut);
+  h+=kpi('--market','--market-soft',I.box,mp.reduce((a,d)=>a+d.orders,0),'Total pesanan','Tokopedia+Shopee');
+  h+=kpi('--seo','--seo-soft',I.seo,S.seo.filter(s=>s.status==='done').length,'Tugas SEO selesai','');
+  h+=`</div>`;
+
+  h+=`<div class="grid2 mb16">`;
+  // social by platform
+  h+=`<div class="card"><div class="card-h"><h3>Konten tayang per platform</h3></div><div style="padding:14px 18px">`;
+  const posted=S.content.filter(c=>c.stage==='posted'&&c.postDate>=cut);
+  const plat={};posted.forEach(c=>c.platforms.forEach(p=>plat[p]=(plat[p]||0)+1));
+  const maxP=Math.max(1,...Object.values(plat));
+  if(!Object.keys(plat).length)h+=`<div class="mut" style="font-size:13px">Belum ada konten tayang di periode ini.</div>`;
+  Object.entries(plat).forEach(([p,n])=>{h+=`<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px"><span style="font-weight:600">${PLATFORMS[p]?PLATFORMS[p][0]:p}</span><span class="tnum">${n}</span></div><div class="bar"><i style="width:${n/maxP*100}%;--accent:${PLATFORMS[p]?PLATFORMS[p][1]:'#888'}"></i></div></div>`});
+  // total engagement
+  const tReach=posted.reduce((a,c)=>a+(c.metrics.reach||0),0),tLikes=posted.reduce((a,c)=>a+(c.metrics.likes||0),0);
+  h+=`<div style="display:flex;gap:24px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">
+    <div><div style="font-size:18px;font-weight:800;font-family:'Sora'">${tReach.toLocaleString('id-ID')}</div><div class="mut" style="font-size:11.5px">Total reach</div></div>
+    <div><div style="font-size:18px;font-weight:800;font-family:'Sora'">${tLikes.toLocaleString('id-ID')}</div><div class="mut" style="font-size:11.5px">Total likes</div></div></div>`;
+  h+=`</div></div>`;
+
+  // marketplace summary
+  h+=`<div class="card"><div class="card-h"><h3>Marketplace</h3></div><div style="padding:14px 18px">`;
+  ['tokopedia','shopee'].forEach(ch=>{
+    const rows=mp.filter(d=>d.channel===ch);const o=rows.reduce((a,d)=>a+d.orders,0),sh=rows.reduce((a,d)=>a+d.shipped,0);
+    const ci=rows.reduce((a,d)=>a+d.chatsIn,0),cr=rows.reduce((a,d)=>a+d.chatsReplied,0);
+    const cc=ch==='tokopedia'?'#03AC0E':'#EE4D2D';
+    h+=`<div style="margin-bottom:13px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><span class="chl" style="background:${cc}">${ch==='tokopedia'?'Tokopedia':'Shopee'}</span><span style="margin-left:auto;font-size:12px;color:var(--txt-2)">${o} pesanan · ${sh} terkirim · ${ci?Math.round(cr/ci*100):100}% chat dibalas</span></div></div>`;
+  });
+  const allResp=mp.filter(d=>d.respMin);const avg=allResp.length?Math.round(allResp.reduce((a,d)=>a+d.respMin,0)/allResp.length):0;
+  h+=`<div style="padding-top:12px;border-top:1px solid var(--line);display:flex;gap:24px">
+    <div><div style="font-size:18px;font-weight:800;font-family:'Sora';color:${slaEval(avg).color}">${avg} mnt</div><div class="mut" style="font-size:11.5px">Avg respon chat (target ${S.settings.slaTargetMin}')</div></div>
+    <div><div style="font-size:18px;font-weight:800;font-family:'Sora'">${S.mp_issues.filter(x=>x.status!=='selesai').length}</div><div class="mut" style="font-size:11.5px">Masalah terbuka</div></div></div>`;
+  h+=`</div></div></div>`;
+
+  // per-person
+  h+=`<div class="card"><div class="card-h"><h3>Aktivitas per anggota</h3></div><table class="tbl"><thead><tr><th>Anggota</th><th>Peran</th><th class="num">Tugas selesai</th><th class="num">Tugas aktif</th><th class="num">Lewat tenggat</th></tr></thead><tbody>`;
+  S.users.filter(u=>u.role!=='lead').forEach(u=>{
+    const d=S.tasks.filter(t=>t.assignee===u.id&&t.status==='done').length;
+    const a=S.tasks.filter(t=>t.assignee===u.id&&t.status!=='done').length;
+    const ov=S.tasks.filter(t=>t.assignee===u.id&&isOverdue(t.due,t.status)).length;
+    h+=`<tr><td><div style="display:flex;align-items:center;gap:9px">${avatar(u.id,'sm')}<span style="font-weight:600">${esc(ROLES[u.role].short)}</span></div></td>
+      <td><span class="tag">${ROLES[u.role].name}</span></td><td class="num">${d}</td><td class="num">${a}</td>
+      <td class="num" style="color:${ov?'var(--danger)':'inherit'}">${ov}</td></tr>`});
+  h+=`</tbody></table></div>`;
+  V.innerHTML=h;
+}
+
+/* ============================================================
+   TEAM
+   ============================================================ */
+function vTeam(V){
+  let h=`<div class="pagehead"><div><div class="h">Tim Digital Marketing</div><div class="d">Anggota & peran. Peran menentukan modul yang bisa diakses.</div></div></div>`;
+  h+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">`;
+  S.users.forEach(u=>{
+    const open=S.tasks.filter(t=>t.assignee===u.id&&t.status!=='done').length;
+    const c={lead:'--primary',seo:'--seo',social:'--social',marketplace:'--market'}[u.role];
+    h+=`<div class="card" style="padding:18px">
+      <div style="display:flex;align-items:center;gap:13px;margin-bottom:14px">${avatar(u.id,'lg')}
+      <div><div style="font-weight:700;font-size:15px">${esc(ROLES[u.role].short)}</div><div style="font-size:12px;color:var(--txt-2)">${esc(ROLES[u.role].name)}</div></div></div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px">${moduleTagsFor(u.role)}</div>
+      <div style="display:flex;justify-content:space-between;padding-top:12px;border-top:1px solid var(--line);font-size:12.5px"><span class="mut">Tugas aktif</span><span style="font-weight:700">${open}</span></div>
+      <button class="btn gho sm" style="width:100%;justify-content:center;margin-top:12px" onclick="openUser('${u.id}')">Edit nama</button></div>`;
+  });
+  h+=`</div>
+  <div class="card" style="margin-top:16px;padding:16px 18px"><div style="font-size:13px;color:var(--txt-2)">
+  <b>Catatan struktur:</b> Lead memegang akses penuh (approval, laporan, semua modul). Staf hanya melihat modul divisinya + papan tugas + kalender + aset. Tambah anggota baru lewat menu ini saat tim berkembang.</div></div>`;
+  V.innerHTML=h;
+}
+function moduleTagsFor(role){
+  const mods=NAV.filter(n=>!n.sec&&n.roles.includes(role)&&['seo','social','market','reports','team'].includes(n.id));
+  if(role==='lead')return `<span class="tag" style="background:var(--primary-soft);color:var(--primary-d);border:0">Akses penuh</span>`;
+  return mods.map(m=>`<span class="tag" style="color:var(${m.color});border-color:transparent;background:color-mix(in srgb,var(${m.color}) 12%,#fff)">${m.label}</span>`).join('')||'<span class="tag">Tugas & Kalender</span>';
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+function vSettings(V){
+  const s=S.settings;
+  let h=`<div class="pagehead"><div><div class="h">Pengaturan</div><div class="d">Profil perusahaan & sinkronisasi tim.</div></div></div>`;
+  h+=`<div class="card mb16"><div class="card-h"><h3>Profil</h3></div><div style="padding:18px">
+    <div class="fg"><label>Nama perusahaan</label><input id="setCompany" value="${esc(s.company)}"></div>
+    <div class="fg"><label>URL SEO Monitor</label><input id="setSeoUrl" value="${esc(s.seoMonitorUrl)}"></div>
+    <div class="fg"><label>PIN login (semua akun)</label><input id="setPin" value="${esc(S.pin)}" maxlength="4"></div>
+    <button class="btn pri" onclick="saveProfile()">${svg(I.check)} Simpan profil</button></div></div>`;
+
+  h+=`<div class="card mb16"><div class="card-h"><h3>SLA respon chat marketplace</h3><span class="sub">Tokopedia & Shopee</span></div><div style="padding:18px">
+    <div style="font-size:12.5px;color:var(--txt-2);margin-bottom:14px;line-height:1.6">Angka default mengikuti standar resmi platform: target konversi ${s.slaTargetMin}' (balas calon pembeli secepatnya saat jam buka), batas aman ${s.slaPlatformMin}' (Tokopedia sarankan balas &lt; 1 jam). Shopee menghitung chat "dibalas" bila direspon dalam 12 jam — jaga Persentase Chat Dibalas ≥ 70% + rating ≥ 4,5 untuk Star Seller.</div>
+    <div class="fg two"><div><label>Target respon (menit)</label><input id="setSlaTgt" type="number" value="${s.slaTargetMin}"></div>
+    <div><label>Batas aman (menit)</label><input id="setSlaPlat" type="number" value="${s.slaPlatformMin}"></div></div>
+    <div class="fg two"><div><label>Jam buka toko</label><input id="setOpen" type="time" value="${esc(s.storeOpen)}"></div>
+    <div><label>Jam tutup toko</label><input id="setClose" type="time" value="${esc(s.storeClose)}"></div></div>
+    <button class="btn pri" onclick="saveSla()">${svg(I.check)} Simpan SLA</button></div></div>`;
+
+  h+=`<div class="card mb16"><div class="card-h"><h3>Sinkronisasi tim (cloud)</h3><span class="sub">Supabase</span></div><div style="padding:18px">
+    <div style="font-size:13px;color:var(--txt-2);margin-bottom:14px;line-height:1.6">Agar 4 anggota saling terhubung lintas-device, app ini sinkron ke <b>Supabase</b> (sama seperti RuteKirim). Buat tabel sekali saja di SQL Editor Supabase, lalu isi <b>Project URL</b> &amp; <b>anon public key</b> di bawah.</div>
+    <details style="margin-bottom:14px"><summary style="cursor:pointer;font-size:12.5px;font-weight:600;color:var(--primary-d)">Lihat SQL setup (jalankan 1×)</summary>
+    <pre style="background:var(--ink);color:#D7E0EA;padding:12px 14px;border-radius:10px;font-size:11px;line-height:1.55;overflow:auto;margin-top:10px">create table markas_state (
+  id text primary key,
+  data jsonb,
+  updated_at timestamptz default now()
+);
+alter table markas_state enable row level security;
+create policy "team access" on markas_state
+  for all using (true) with check (true);</pre>
+    <div style="font-size:11.5px;color:var(--txt-3);margin-top:8px;line-height:1.5">Policy ini terbuka (semua orang dengan anon key bisa baca/tulis) — pas untuk 1 tim internal. Bila perlu lebih ketat nanti, bisa pakai Supabase Auth.</div></details>
+    <div class="fg"><label>Project URL</label><input id="sbUrl" value="${esc(s.supabaseUrl)}" placeholder="https://xxxx.supabase.co"></div>
+    <div class="fg"><label>Anon public key</label><input id="sbKey" value="${esc(s.supabaseKey)}" placeholder="eyJhbGciOi…"></div>
+    <div class="fg"><label>ID workspace tim</label><input id="sbWs" value="${esc(s.workspaceId)}" placeholder="kalingga"></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <label class="chk ${s.sync?'on':''}" id="syncChk" onclick="this.classList.toggle('on')"><span>Aktifkan sinkronisasi cloud</span></label>
+      <button class="btn pri" onclick="saveSync()">Simpan &amp; sambungkan</button>
+      <button class="btn gho sm" onclick="pullNow()">Tarik data terbaru</button></div></div></div>`;
+
+  h+=`<div class="card"><div class="card-h"><h3>Data</h3></div><div style="padding:18px;display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn gho" onclick="exportData()">${svg(I.asset)} Ekspor data (JSON)</button>
+    <button class="btn gho" onclick="document.getElementById('imp').click()">${svg(I.inbox)} Impor data</button>
+    <input type="file" id="imp" accept=".json" class="hide" onchange="importData(event)">
+    <button class="btn gho" style="color:var(--danger);border-color:var(--danger-soft)" onclick="resetData()">Reset ke data contoh</button></div></div>`;
+  V.innerHTML=h;
+}
+function saveProfile(){S.settings.company=val('setCompany');S.settings.seoMonitorUrl=val('setSeoUrl');S.pin=val('setPin')||'1234';save();toast('Profil disimpan')}
+function saveSla(){S.settings.slaTargetMin=Math.max(1,parseInt(val('setSlaTgt'))||15);S.settings.slaPlatformMin=Math.max(1,parseInt(val('setSlaPlat'))||60);S.settings.storeOpen=val('setOpen')||'08:00';S.settings.storeClose=val('setClose')||'16:00';save();toast('SLA disimpan');render()}
+function saveSync(){S.settings.supabaseUrl=val('sbUrl').trim().replace(/\/$/,'');S.settings.supabaseKey=val('sbKey').trim();S.settings.workspaceId=val('sbWs').trim()||'kalingga';S.settings.sync=document.getElementById('syncChk').classList.contains('on');save();setSync(S.settings.sync);if(S.settings.sync){pushCloud();toast('Sinkronisasi diaktifkan')}else toast('Pengaturan disimpan')}
+async function pullNow(){if(!S.settings.supabaseUrl){toast('Isi kredensial Supabase dulu');return}await pullCloud();toast('Data terbaru ditarik');render()}
+function exportData(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='markas-kalingga-'+todayISO()+'.json';a.click();toast('Data diekspor')}
+function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{S=JSON.parse(r.result);save();toast('Data diimpor');render()}catch{toast('File tidak valid')}};r.readAsText(f)}
+function resetData(){if(confirm('Reset semua data ke contoh awal? Tindakan ini tidak bisa dibatalkan.')){S=seed();save();toast('Data direset');boot()}}
+const val=id=>document.getElementById(id).value;
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+function modal(title,body,footer){
+  closeModal();
+  const bg=document.createElement('div');bg.className='modal-bg';bg.id='modalBg';
+  bg.onclick=e=>{if(e.target===bg)closeModal()};
+  bg.innerHTML=`<div class="modal"><div class="modal-h"><h3>${title}</h3><button class="x" onclick="closeModal()">✕</button></div>
+    <div class="modal-b">${body}</div><div class="modal-f">${footer}</div></div>`;
+  document.body.appendChild(bg);
+}
+function closeModal(){const m=document.getElementById('modalBg');if(m)m.remove()}
+
+/* --- Task modal --- */
+function openTask(id){
+  const t=id==='new'?{id:'new',title:'',role:cur.role==='lead'?'social':cur.role,assignee:cur.id,status:'todo',priority:'med',due:dISO(2),note:''}:S.tasks.find(x=>x.id===id);
+  const staffOpts=S.users.map(u=>`<option value="${u.id}" ${u.id===t.assignee?'selected':''}>${esc(ROLES[u.role].short)}</option>`).join('');
+  const body=`
+    <div class="fg"><label>Judul tugas</label><input id="tTitle" value="${esc(t.title)}" placeholder="cth: Edit reels produk Kärcher"></div>
+    <div class="fg two">
+      <div><label>Divisi</label><select id="tRole">${Object.keys(ROLES).map(r=>`<option value="${r}" ${r===t.role?'selected':''}>${ROLES[r].short}</option>`).join('')}</select></div>
+      <div><label>Ditugaskan ke</label><select id="tAssignee">${staffOpts}</select></div></div>
+    <div class="fg two">
+      <div><label>Prioritas</label><select id="tPriority">${['high','med','low'].map(p=>`<option value="${p}" ${p===t.priority?'selected':''}>${({high:'Tinggi',med:'Sedang',low:'Rendah'})[p]}</option>`).join('')}</select></div>
+      <div><label>Tenggat</label><input type="date" id="tDue" value="${t.due||''}"></div></div>
+    <div class="fg"><label>Catatan</label><textarea id="tNote" placeholder="Detail / brief singkat">${esc(t.note)}</textarea></div>`;
+  const foot=`${id!=='new'?`<button class="btn gho" style="margin-right:auto;color:var(--danger)" onclick="delTask('${id}')">Hapus</button>`:''}
+    <button class="btn gho" onclick="closeModal()">Batal</button><button class="btn pri" onclick="saveTask('${id}')">Simpan</button>`;
+  modal(id==='new'?'Tugas baru':'Edit tugas',body,foot);
+}
+function saveTask(id){
+  const o={title:val('tTitle'),role:val('tRole'),assignee:val('tAssignee'),priority:val('tPriority'),due:val('tDue'),note:val('tNote')};
+  if(!o.title){toast('Judul wajib diisi');return}
+  if(id==='new')S.tasks.push({id:uid(),status:'todo',createdBy:cur.id,...o});
+  else Object.assign(S.tasks.find(x=>x.id===id),o);
+  save();closeModal();render();toast('Tugas disimpan');
+}
+function delTask(id){S.tasks=S.tasks.filter(x=>x.id!==id);save();closeModal();render();toast('Tugas dihapus')}
+
+/* --- Content modal --- */
+function openContent(id){
+  const c=id==='new'?{id:'new',title:'',platforms:[],type:'Reels',shootDate:'',postDate:dISO(5),stage:'ide',owner:cur.role==='social'?cur.id:S.users.find(u=>u.role==='social').id,asset:'',caption:'',hashtags:'',metrics:{views:0,likes:0,reach:0,saves:0},note:''}:S.content.find(x=>x.id===id);
+  const platChk=Object.entries(PLATFORMS).map(([k,[n]])=>`<span class="chk ${c.platforms.includes(k)?'on':''}" data-p="${k}" onclick="this.classList.toggle('on')">${n}</span>`).join('');
+  const body=`
+    <div class="fg"><label>Judul konten</label><input id="cTitle" value="${esc(c.title)}" placeholder="cth: Demo Kärcher HD 5/11"></div>
+    <div class="fg"><label>Platform</label><div class="chk-grid" id="cPlat">${platChk}</div></div>
+    <div class="fg two">
+      <div><label>Tipe</label><select id="cType">${['Reels','Foto','Carousel','Story','Video panjang'].map(t=>`<option ${t===c.type?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div><label>Tahap</label><select id="cStage" ${cur.role!=='lead'?'':''}>${STAGES.map(([k,n])=>`<option value="${k}" ${k===c.stage?'selected':''}>${n}</option>`).join('')}</select></div></div>
+    <div class="fg two"><div><label>Tgl shooting</label><input type="date" id="cShoot" value="${c.shootDate||''}"></div>
+      <div><label>Tgl tayang</label><input type="date" id="cPost" value="${c.postDate||''}"></div></div>
+    <div class="fg"><label>Link aset (Drive)</label><input id="cAsset" value="${esc(c.asset)}" placeholder="https://drive.google.com/…"></div>
+    <div class="fg"><label>Caption</label><textarea id="cCap" placeholder="Teks caption">${esc(c.caption)}</textarea></div>
+    <div class="fg"><label>Hashtag</label><input id="cHash" value="${esc(c.hashtags)}" placeholder="#karcher #kalingga"></div>
+    ${c.stage==='posted'?`<div class="fg"><label>Performa</label><div class="fg two"><input id="mViews" type="number" placeholder="Views" value="${c.metrics.views||''}"><input id="mLikes" type="number" placeholder="Likes" value="${c.metrics.likes||''}"></div><div class="fg two"><input id="mReach" type="number" placeholder="Reach" value="${c.metrics.reach||''}"><input id="mSaves" type="number" placeholder="Saves" value="${c.metrics.saves||''}"></div></div>`:''}`;
+  const foot=`${id!=='new'?`<button class="btn gho" style="margin-right:auto;color:var(--danger)" onclick="delContent('${id}')">Hapus</button>`:''}
+    <button class="btn gho" onclick="closeModal()">Batal</button><button class="btn acc" style="--accent:var(--social)" onclick="saveContent('${id}')">Simpan</button>`;
+  modal(id==='new'?'Konten baru':'Edit konten',body,foot);
+}
+function saveContent(id){
+  const plats=[...document.querySelectorAll('#cPlat .chk.on')].map(e=>e.dataset.p);
+  const o={title:val('cTitle'),platforms:plats,type:val('cType'),stage:val('cStage'),shootDate:val('cShoot'),postDate:val('cPost'),asset:val('cAsset'),caption:val('cCap'),hashtags:val('cHash')};
+  if(!o.title){toast('Judul wajib diisi');return}
+  const m=document.getElementById('mViews');
+  if(m)o.metrics={views:+val('mViews')||0,likes:+val('mLikes')||0,reach:+val('mReach')||0,saves:+val('mSaves')||0};
+  if(id==='new')S.content.push({id:uid(),owner:cur.role==='social'?cur.id:S.users.find(u=>u.role==='social').id,metrics:{views:0,likes:0,reach:0,saves:0},note:'',...o});
+  else Object.assign(S.content.find(x=>x.id===id),o);
+  save();closeModal();render();toast('Konten disimpan');
+}
+function delContent(id){S.content=S.content.filter(x=>x.id!==id);save();closeModal();render();toast('Konten dihapus')}
+
+/* --- Marketplace modals --- */
+function openMpDaily(id){
+  const d=id==='new'?{id:'new',date:todayISO(),channel:'shopee',orders:0,resi:0,shipped:0,chatsIn:0,chatsReplied:0,respMin:0,note:''}:S.mp_daily.find(x=>x.id===id);
+  const body=`<div class="fg two"><div><label>Tanggal</label><input type="date" id="dDate" value="${d.date}"></div>
+    <div><label>Channel</label><select id="dChannel"><option value="shopee" ${d.channel==='shopee'?'selected':''}>Shopee</option><option value="tokopedia" ${d.channel==='tokopedia'?'selected':''}>Tokopedia</option></select></div></div>
+    <div class="fg two"><div><label>Pesanan masuk</label><input type="number" id="dOrders" value="${d.orders}"></div><div><label>Resi dicetak</label><input type="number" id="dResi" value="${d.resi}"></div></div>
+    <div class="fg two"><div><label>Dikirim</label><input type="number" id="dShipped" value="${d.shipped}"></div><div><label>Respon chat (mnt)</label><input type="number" id="dResp" value="${d.respMin}"></div></div>
+    <div class="fg two"><div><label>Chat masuk</label><input type="number" id="dChatsIn" value="${d.chatsIn}"></div><div><label>Chat dibalas</label><input type="number" id="dChatsRep" value="${d.chatsReplied}"></div></div>
+    <div class="fg"><label>Catatan</label><textarea id="dNote">${esc(d.note)}</textarea></div>`;
+  const foot=`${id!=='new'?`<button class="btn gho" style="margin-right:auto;color:var(--danger)" onclick="delMpDaily('${id}')">Hapus</button>`:''}<button class="btn gho" onclick="closeModal()">Batal</button><button class="btn acc" style="--accent:var(--market)" onclick="saveMpDaily('${id}')">Simpan</button>`;
+  modal(id==='new'?'Input log harian':'Edit log',body,foot);
+}
+function saveMpDaily(id){
+  const o={date:val('dDate'),channel:val('dChannel'),orders:+val('dOrders')||0,resi:+val('dResi')||0,shipped:+val('dShipped')||0,chatsIn:+val('dChatsIn')||0,chatsReplied:+val('dChatsRep')||0,respMin:+val('dResp')||0,note:val('dNote')};
+  if(id==='new')S.mp_daily.push({id:uid(),owner:cur.id,...o});else Object.assign(S.mp_daily.find(x=>x.id===id),o);
+  save();closeModal();render();toast('Log harian disimpan');
+}
+function delMpDaily(id){S.mp_daily=S.mp_daily.filter(x=>x.id!==id);save();closeModal();render();toast('Dihapus')}
+
+function openMpProduct(id){
+  const p=id==='new'?{id:'new',sku:'',name:'',channel:'shopee',task:'foto',status:'todo',note:''}:S.mp_products.find(x=>x.id===id);
+  const body=`<div class="fg two"><div><label>SKU</label><input id="pSku" value="${esc(p.sku)}"></div><div><label>Channel</label><select id="pChannel"><option value="shopee" ${p.channel==='shopee'?'selected':''}>Shopee</option><option value="tokopedia" ${p.channel==='tokopedia'?'selected':''}>Tokopedia</option></select></div></div>
+    <div class="fg"><label>Nama produk</label><input id="pName" value="${esc(p.name)}"></div>
+    <div class="fg"><label>Jenis update</label><select id="pTask">${Object.entries({harga:'Harga',stok:'Stok',foto:'Foto',deskripsi:'Deskripsi',baru:'Produk baru'}).map(([k,v])=>`<option value="${k}" ${k===p.task?'selected':''}>${v}</option>`).join('')}</select></div>
+    <div class="fg"><label>Catatan</label><textarea id="pNote">${esc(p.note)}</textarea></div>`;
+  const foot=`${id!=='new'?`<button class="btn gho" style="margin-right:auto;color:var(--danger)" onclick="delMpProduct('${id}')">Hapus</button>`:''}<button class="btn gho" onclick="closeModal()">Batal</button><button class="btn acc" style="--accent:var(--market)" onclick="saveMpProduct('${id}')">Simpan</button>`;
+  modal(id==='new'?'Produk perlu update':'Edit produk',body,foot);
+}
+function saveMpProduct(id){
+  const o={sku:val('pSku'),name:val('pName'),channel:val('pChannel'),task:val('pTask'),note:val('pNote')};
+  if(!o.name){toast('Nama produk wajib');return}
+  if(id==='new')S.mp_products.push({id:uid(),status:'todo',...o});else Object.assign(S.mp_products.find(x=>x.id===id),o);
+  save();closeModal();render();toast('Produk disimpan');
+}
+function delMpProduct(id){S.mp_products=S.mp_products.filter(x=>x.id!==id);save();closeModal();render();toast('Dihapus')}
+
+function openMpIssue(id){
+  const x=id==='new'?{id:'new',date:todayISO(),type:'komplain',channel:'shopee',ref:'',desc:'',status:'proses'}:S.mp_issues.find(i=>i.id===id);
+  const body=`<div class="fg two"><div><label>Tanggal</label><input type="date" id="iDate" value="${x.date}"></div><div><label>Jenis</label><select id="iType"><option value="komplain" ${x.type==='komplain'?'selected':''}>Komplain</option><option value="retur" ${x.type==='retur'?'selected':''}>Retur</option></select></div></div>
+    <div class="fg two"><div><label>Channel</label><select id="iChannel"><option value="shopee" ${x.channel==='shopee'?'selected':''}>Shopee</option><option value="tokopedia" ${x.channel==='tokopedia'?'selected':''}>Tokopedia</option></select></div><div><label>Ref pesanan</label><input id="iRef" value="${esc(x.ref)}"></div></div>
+    <div class="fg"><label>Keterangan</label><textarea id="iDesc">${esc(x.desc)}</textarea></div>
+    <div class="fg"><label>Status</label><select id="iStatus"><option value="proses" ${x.status==='proses'?'selected':''}>Proses</option><option value="selesai" ${x.status==='selesai'?'selected':''}>Selesai</option></select></div>`;
+  const foot=`${id!=='new'?`<button class="btn gho" style="margin-right:auto;color:var(--danger)" onclick="delMpIssue('${id}')">Hapus</button>`:''}<button class="btn gho" onclick="closeModal()">Batal</button><button class="btn acc" style="--accent:var(--market)" onclick="saveMpIssue('${id}')">Simpan</button>`;
+  modal(id==='new'?'Catat komplain/retur':'Edit',body,foot);
+}
+function saveMpIssue(id){
+  const o={date:val('iDate'),type:val('iType'),channel:val('iChannel'),ref:val('iRef'),desc:val('iDesc'),status:val('iStatus')};
+  if(id==='new')S.mp_issues.push({id:uid(),...o});else Object.assign(S.mp_issues.find(x=>x.id===id),o);
+  save();closeModal();render();toast('Disimpan');
+}
+function delMpIssue(id){S.mp_issues=S.mp_issues.filter(x=>x.id!==id);save();closeModal();render();toast('Dihapus')}
+
+/* --- SEO modal --- */
+function openSeo(id){
+  const s=id==='new'?{id:'new',title:'',type:'artikel',target:'',status:'todo',due:dISO(5),owner:S.users.find(u=>u.role==='seo').id,note:''}:S.seo.find(x=>x.id===id);
+  const body=`<div class="fg"><label>Judul tugas</label><input id="sTitle" value="${esc(s.title)}"></div>
+    <div class="fg two"><div><label>Jenis</label><select id="sType">${Object.entries({artikel:'Artikel',onpage:'On-page',teknikal:'Teknikal',backlink:'Backlink',riset:'Riset'}).map(([k,v])=>`<option value="${k}" ${k===s.type?'selected':''}>${v}</option>`).join('')}</select></div>
+    <div><label>Tenggat</label><input type="date" id="sDue" value="${s.due||''}"></div></div>
+    <div class="fg"><label>Target (URL / keyword)</label><input id="sTarget" value="${esc(s.target)}" placeholder="cth: /kategori/karcher atau 'vacuum industri'"></div>
+    <div class="fg"><label>Status</label><select id="sStatus">${Object.entries({todo:'Antrian',progress:'Dikerjakan',review:'Review',done:'Selesai'}).map(([k,v])=>`<option value="${k}" ${k===s.status?'selected':''}>${v}</option>`).join('')}</select></div>
+    <div class="fg"><label>Catatan</label><textarea id="sNote">${esc(s.note)}</textarea></div>`;
+  const foot=`${id!=='new'?`<button class="btn gho" style="margin-right:auto;color:var(--danger)" onclick="delSeo('${id}')">Hapus</button>`:''}<button class="btn gho" onclick="closeModal()">Batal</button><button class="btn acc" style="--accent:var(--seo)" onclick="saveSeo('${id}')">Simpan</button>`;
+  modal(id==='new'?'Tugas SEO baru':'Edit tugas SEO',body,foot);
+}
+function saveSeo(id){
+  const o={title:val('sTitle'),type:val('sType'),target:val('sTarget'),status:val('sStatus'),due:val('sDue'),note:val('sNote')};
+  if(!o.title){toast('Judul wajib');return}
+  if(id==='new')S.seo.push({id:uid(),owner:S.users.find(u=>u.role==='seo').id,...o});else Object.assign(S.seo.find(x=>x.id===id),o);
+  save();closeModal();render();toast('Tugas SEO disimpan');
+}
+function delSeo(id){S.seo=S.seo.filter(x=>x.id!==id);save();closeModal();render();toast('Dihapus')}
+
+/* --- Asset modal --- */
+function openAsset(id){
+  const a=id==='new'?{id:'new',name:'',category:'Brand',url:'',note:''}:S.assets.find(x=>x.id===id);
+  const cats=['Brand','Template','Footage','Produk','Lainnya'];
+  const body=`<div class="fg"><label>Nama aset</label><input id="aName" value="${esc(a.name)}"></div>
+    <div class="fg"><label>Kategori</label><select id="aCat">${cats.map(c=>`<option ${c===a.category?'selected':''}>${c}</option>`).join('')}</select></div>
+    <div class="fg"><label>URL</label><input id="aUrl" value="${esc(a.url)}" placeholder="https://drive.google.com/…"></div>
+    <div class="fg"><label>Catatan</label><input id="aNote" value="${esc(a.note)}"></div>`;
+  const foot=`${id!=='new'?`<button class="btn gho" style="margin-right:auto;color:var(--danger)" onclick="delAsset('${id}')">Hapus</button>`:''}<button class="btn gho" onclick="closeModal()">Batal</button><button class="btn pri" onclick="saveAsset('${id}')">Simpan</button>`;
+  modal(id==='new'?'Tambah aset':'Edit aset',body,foot);
+}
+function saveAsset(id){
+  const o={name:val('aName'),category:val('aCat'),url:val('aUrl'),note:val('aNote')};
+  if(!o.name){toast('Nama wajib');return}
+  if(id==='new')S.assets.push({id:uid(),...o});else Object.assign(S.assets.find(x=>x.id===id),o);
+  save();closeModal();render();toast('Aset disimpan');
+}
+function delAsset(id){S.assets=S.assets.filter(x=>x.id!==id);save();closeModal();render();toast('Dihapus')}
+
+/* --- User modal --- */
+function openUser(id){
+  const u=S.users.find(x=>x.id===id);
+  const body=`<div class="fg"><label>Nama tampilan</label><input id="uName" value="${esc(u.name)}"></div>
+    <div class="fg"><label>Peran</label><input value="${esc(ROLES[u.role].name)}" disabled style="opacity:.6"></div>`;
+  modal('Edit anggota',body,`<button class="btn gho" onclick="closeModal()">Batal</button><button class="btn pri" onclick="saveUser('${id}')">Simpan</button>`);
+}
+function saveUser(id){const u=S.users.find(x=>x.id===id);u.name=val('uName')||u.name;save();closeModal();render();if(cur.id===id){document.getElementById('sbName').textContent=ROLES[u.role].short}toast('Disimpan')}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init(){
+  if(!load())S=seed();
+  // migrate guard
+  if(!S.settings)S.settings=seed().settings;
+  renderLogin();
+  // try cloud pull if configured (won't block login)
+  if(S.settings.sync&&S.settings.supabaseUrl){await pullCloud();renderLogin()}
+})();
+</script>
+</body>
+</html>
